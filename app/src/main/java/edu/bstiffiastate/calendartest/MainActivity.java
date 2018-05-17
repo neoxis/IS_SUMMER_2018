@@ -16,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     CalendarView simpleCalendarView;
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
