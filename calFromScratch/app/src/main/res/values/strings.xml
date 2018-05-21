@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CalendarApp2</string>
     <string name="current_date">May, 2018</string>
+    <string name="last_date">30</string>
     <string name="add_event">Add Event</string>
     <string name="sun">SUN</string>
     <string name="mon">MON</string>
