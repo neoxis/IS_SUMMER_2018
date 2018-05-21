@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <!-- Set date button -->
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePicker1"
+        android:onClick="setDate"
+        android:text="@string/date_button_set" />
+
+    <!-- Main banner text telling user to pick a date -->
+    <TextView
+        android:id="@+id/dlsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textView_2"
+        android:text="@string/date_label_set"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <!-- "Date is:" string -->
+    <TextView
+        android:id="@+id/dvsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dlsText"
+        android:layout_marginTop="66dp"
+        android:text="@string/date_view_set"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <!-- Selected date output text space -->
+    <TextView
+        android:id="@+id/dsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dlsText"
+        android:layout_marginTop="66dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/dvsText"
+        android:text="@string/date_selected"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <!-- Banner text telling user to pick a time -->
+    <TextView
+        android:id="@+id/textView_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/button1"
+        android:text="@string/time_pick"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <!-- Button to save time -->
+    <Button
+        android:id="@+id/set_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePicker1"
+        android:layout_toRightOf="@id/button1"
+        android:onClick="setTime"
+        android:text="@string/time_save" />
+
+    <!-- Time picker object -->
+    <TimePicker
+        android:id="@+id/timePicker1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp" />
+
+    <!-- "The time is:" string -->
+    <TextView
+        android:id="@+id/textView_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dvsText"
+        android:layout_marginTop="5dp"
+        android:text="@string/time_current"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <!-- Output text -->
+    <TextView
+        android:id="@+id/textView_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dvsText"
+        android:layout_toRightOf="@id/textView_3"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/time_selected"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>
