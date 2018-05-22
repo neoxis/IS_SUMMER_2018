@@ -6,3 +6,4 @@
 | 5/16	| 2:10	| Completed first attempt; NEED TO BUILD CALENDAR FROM SCRATCH	|
 | 5/17	| 0:50	| Started attempt 2; Created objects (arrows) in drawable |
 | 5/20	| 1:50	| Created a date and time picker app using various tutorials |
+| 5/21	| 1:30	| Created simple todo app with sqlite database |
