@@ -1,4 +1,4 @@
-# IS_SUMMER_2018
+# IS SUMMER 2018 [SE490]
 | Date	| Hours	| Description							|
 |-------|-------|---------------------------------------------------------------|
 | 5/14	| 0:50	| Read up on android and created Trello board			|
@@ -8,3 +8,4 @@
 | 5/20	| 1:50	| Created a date and time picker app using various tutorials |
 | 5/21	| 1:30	| Created simple todo app with sqlite database |
 | 5/22	| 1:35	| Created a simple notification app; Somewhat works, but most methods depreciated; Attempted UI navigation |
+| 5/23	| 1:15	| Created a UI navigation drawer (tutorial); Updated android studio sdk; |
