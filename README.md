@@ -8,4 +8,4 @@
 | 5/20	| 1:50	| Created a date and time picker app using various tutorials |
 | 5/21	| 1:30	| Created simple todo app with sqlite database |
 | 5/22	| 1:35	| Created a simple notification app; Somewhat works, but most methods depreciated; Attempted UI navigation |
-| 5/23	| 1:15	| Created a UI navigation drawer (tutorial); Updated android studio sdk; |
+| 5/23	| 1:35	| Created a UI navigation drawer (tutorial); Updated android studio sdk; Researched up/down navigation; Added idea to possibly use Google Calendar API |
