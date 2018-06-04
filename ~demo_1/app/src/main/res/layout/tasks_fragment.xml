@@ -6,19 +6,42 @@
     android:layout_height="match_parent"
     tools:context="edu.bstiffiastate.cal_task.MainActivity">
 
+    <!-- To do Heading-->
     <TextView
-        android:id="@+id/events_label"
+        android:id="@+id/task_todo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/tab_text_2"
+        android:text="Todo"
         android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
+
+    <!-- To do list-->
+    <ListView
+        android:id="@+id/todo_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/task_todo_label">
+
+    </ListView>
+
+    <!-- Grocery Heading-->
+    <TextView
+        android:id="@+id/grocery_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Grocery"
+        android:textSize="24sp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintTop_toBottomOf="@+id/todo_list" />
+
+    <!-- Grocery List-->
+    <ListView
+        android:id="@+id/grocery_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/grocery_label" />
 
 </android.support.constraint.ConstraintLayout>
