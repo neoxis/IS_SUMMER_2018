@@ -15,4 +15,4 @@
 | 6/03	| 1:55	| Worked on Demo 1; Created List view for Demo 1 |
 | 6/05	| 0:40	| Worked on Demo 1 write-up |
 | 6/06	| 0:40	| Worked on Demo 1 write-up; Restructured demo deliverables |
-| 6/07	| 1:10	| Worked on Demo 1 write-up; Removed firebase stuff; Finished: scope, use cases, communication diagram |
+| 6/07	| 1:35	| Worked on Demo 1 write-up; Removed firebase stuff; Finished: scope, use cases, communication diagram |
