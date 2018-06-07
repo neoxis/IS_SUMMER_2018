@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
         //                .setAction("Action", null).show();
         //    }
         //});
-
-        // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
     }
 
 

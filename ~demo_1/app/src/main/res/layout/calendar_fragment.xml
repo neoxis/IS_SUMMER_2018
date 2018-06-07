@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     tools:context="edu.bstiffiastate.cal_task.MainActivity">
 
-    <!-- <CalendarView
+    <CalendarView
         android:id="@+id/cal_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/Theme.Custom"
-        android:visibility="visible"></CalendarView> -->
+        android:visibility="visible"></CalendarView>
 
+    <!--
     <CalendarView
         android:id="@+id/cal_view"
         android:layout_width="match_parent"
@@ -26,5 +27,6 @@
         android:dateTextAppearance="@style/TextAppearance.AppCompat.Large"
         android:visibility="visible">
     </CalendarView>
+    -->
 
 </android.support.constraint.ConstraintLayout>
