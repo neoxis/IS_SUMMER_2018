@@ -14,7 +14,7 @@ import android.widget.ListView;
  * This class allows the user to create tasks and grocery lists
  */
 
-public class TasksActivity extends Fragment
+public class ListsActivity extends Fragment
 {
     private ListView todo_tasks, g_list;
 
@@ -24,7 +24,7 @@ public class TasksActivity extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tasks_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.lists_fragment, container, false);
 
         //Fill Tasks for demo
         ArrayAdapter<String> tList = new ArrayAdapter<String>(getActivity(),R.layout.task_list_item,R.id.task_title,t_l);
