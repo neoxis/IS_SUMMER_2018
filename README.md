@@ -14,4 +14,4 @@
 | 6/02	| 3:50	| Created calendar view on calendar fragment; Created mock views for Demo 1 report; Worked on Demo 1 report|
 | 6/03	| 1:55	| Worked on Demo 1; Created List view for Demo 1 |
 | 6/05	| 0:40	| Worked on Demo 1 write-up |
-| 6/06	| 0:40	| Worked on Demo 1 write-up; Finished: scope,
+| 6/06	| 0:40	| Worked on Demo 1 write-up; Restructured demo deliverables |
