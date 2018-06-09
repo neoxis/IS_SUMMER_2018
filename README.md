@@ -16,3 +16,4 @@
 | 6/05	| 0:40	| Worked on Demo 1 write-up |
 | 6/06	| 0:40	| Worked on Demo 1 write-up; Restructured demo deliverables |
 | 6/07	| 1:35	| Worked on Demo 1 write-up; Removed firebase stuff; Finished: scope, use cases, communication diagram |
+| 6/08	| 2:15	| Created pictures for Demo 1 write-up; Started add object alert and button to toolbar |

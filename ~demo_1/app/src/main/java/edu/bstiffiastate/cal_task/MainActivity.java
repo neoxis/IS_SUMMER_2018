@@ -1,6 +1,7 @@
 package edu.bstiffiastate.cal_task;
 
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -9,8 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -70,11 +74,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View a_view = inflater.inflate(R.layout.add_object_form, null);
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_add_object) {
+            final EditText taskEditText = new EditText(this);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Create")
+                    .setView(a_view)
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
+            return true;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
