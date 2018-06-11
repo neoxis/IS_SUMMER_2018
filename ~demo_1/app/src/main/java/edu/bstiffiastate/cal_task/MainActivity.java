@@ -83,16 +83,19 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //Creates alert window and attaches listeners
         if (id == R.id.action_add_object) {
             final EditText taskEditText = new EditText(this);
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Create")
                     .setView(a_view)
+                    .setPositiveButton("Add", null)
                     .setNegativeButton("Cancel", null)
                     .create();
             dialog.show();
             return true;
         }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
