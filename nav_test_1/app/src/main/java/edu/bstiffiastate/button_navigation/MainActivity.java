@@ -14,10 +14,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button b1 = findViewById(R.id.button1);
+        Button b2 = findViewById(R.id.button3);
+
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Activity2.class));
+                startActivity(new Intent(MainActivity.this, Lists_Activity.class));
+            }
+        });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, Calendar_Activity.class));
             }
         });
     }
