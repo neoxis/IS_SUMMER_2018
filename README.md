@@ -19,4 +19,4 @@
 | 6/08	| 2:15	| Created pictures for Demo 1 write-up; Started add object alert and button to toolbar |
 | 6/11	| 3:55	| Finished object entry form; Worked on Demo 1 write-up; Created tutorial pictures |
 | 6/12	| 1:40	| Finished button navigation example; Added button navigation/cal from scratch pictures to demo 1 write-up |
-| 6/13	| 2:30	| Finished demo 1 tutorial, app navigation |
+| 6/13	| 3:25	| Finished demo 1: tutorial, app navigation, calendar depreciation, references |
