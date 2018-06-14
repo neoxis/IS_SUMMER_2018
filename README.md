@@ -20,3 +20,5 @@
 | 6/11	| 3:55	| Finished object entry form; Worked on Demo 1 write-up; Created tutorial pictures |
 | 6/12	| 1:40	| Finished button navigation example; Added button navigation/cal from scratch pictures to demo 1 write-up |
 | 6/13	| 3:25	| Finished demo 1: tutorial, app navigation, calendar depreciation, references |
+| 6/14	| 1:00	| Finished Demo 1 |
+| ====	| ====	| XXX DEMO 0NE ENDED XXX |
