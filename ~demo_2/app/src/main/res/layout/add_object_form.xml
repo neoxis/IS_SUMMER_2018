@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Top row of the add object form -->
+    <LinearLayout
+        android:id="@+id/add_object_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <!-- Public/Private toggle button -->
+        <ToggleButton
+            android:id="@+id/public_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Public"
+            android:textOff="Private" />
+
+        <!-- Radio group for task/event/item -->
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/public_toggle">
+
+            <!-- Task button-->
+            <RadioButton
+                android:id="@+id/radio_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task" />
+
+            <!-- Event button -->
+            <RadioButton
+                android:id="@+id/radio_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event" />
+
+            <!-- Item button -->
+            <RadioButton
+                android:id="@+id/radio_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <!-- Date EditText object -->
+    <EditText
+        android:id="@+id/date_edit"
+        android:layout_width="wrap_content"
+        android:minWidth="50sp"
+        android:maxLength="10"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:clickable="true"
+        app:layout_constraintTop_toBottomOf="@id/add_object_top"/>
+
+    <!-- Entry Title EditText object -->
+    <EditText
+        android:id="@+id/entry_edit"
+        android:layout_width="wrap_content"
+        android:minWidth="250sp"
+        android:layout_height="wrap_content"
+        android:inputType="textAutoCorrect"
+        app:layout_constraintStart_toEndOf="@id/date_edit"
+        app:layout_constraintTop_toBottomOf="@id/add_object_top" />
+
+</android.support.constraint.ConstraintLayout>
