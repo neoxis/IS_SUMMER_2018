@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    //local database
+    private LocalDatabaseHelper ldbh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+
+        //local database
+        ldbh = new LocalDatabaseHelper(this);
 
         return super.onOptionsItemSelected(item);
     }
