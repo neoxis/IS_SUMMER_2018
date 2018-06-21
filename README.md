@@ -25,3 +25,4 @@
 | 6/14	| 1:35	| Researched SQLite database; mapped out database communication; wrote database method pseudo-code |
 | 6/15	| 4:45	| Added localdbHelper class; re-installed android studio update crash |
 | 6/16	| 2:15	| Started demo 2; Created datepicker_test |
+| 6/20	| 3:35	| Created todo_1; started implemented todo list/ sqlite database |
