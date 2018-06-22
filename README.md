@@ -26,3 +26,4 @@
 | 6/15	| 4:45	| Added localdbHelper class; re-installed android studio update crash |
 | 6/16	| 2:15	| Started demo 2; Created datepicker_test |
 | 6/20	| 3:35	| Created todo_1; started implemented todo list/ sqlite database |
+| 6/22	| 2:10	| Created account_db_test and account_main |
