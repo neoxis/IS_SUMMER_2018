@@ -1,9 +1,14 @@
 package edu.bstiffiastate.account_main;
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //dropdown menu action listener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -76,18 +82,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void viewAccount(View view)
-    {
-        String data = helper.getData();
-        Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
-    }
-
     public void showSec(View view)
     {
         a_name.setVisibility(View.INVISIBLE);
         a_name.setHeight(0);
     }
 
+    /**
+     * Dropdown menu methods
+     */
+    public void viewAccount(View view)
+    {
+        String data = helper.getData();
+        Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
+    }
     //add account
     public void add()
     {
@@ -98,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
         //create edit text boxes
         final EditText name = new EditText(this);
         name.setHint("username");
-        final EditText pass = new EditText(this);
-        pass.setHint("password");
+        name.setMaxLines(1);
+        final EditText pass = password("password");
 
         //add to layout
         l.addView(name);
@@ -123,7 +131,10 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 Toast.makeText(getApplicationContext(),"Insertion Unsuccessful",Toast.LENGTH_LONG).show();
                             }
-                            else Toast.makeText(getApplicationContext(),"Insertion Successful",Toast.LENGTH_LONG).show();
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"Insertion Successful",Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
@@ -141,12 +152,26 @@ public class MainActivity extends AppCompatActivity {
         //create edit text views
         final EditText a_name = new EditText(this);
         a_name.setHint("username");
-        final EditText o_pass = new EditText(this);
-        o_pass.setHint("password");
-        final EditText n_pass = new EditText(this);
-        n_pass.setHint("new password");
-        final EditText c_pass = new EditText(this);
-        c_pass.setHint("confirm password");
+        a_name.setMaxLines(1);
+        final EditText o_pass = password("password");
+        final EditText n_pass = password("new password");
+        final EditText c_pass = password("confirm password");
+        c_pass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable e) {
+                if(!c_pass.getText().toString().equals(n_pass.getText().toString()))
+                {
+                    c_pass.setError("does not match");
+                }
+                else c_pass.setError(null);
+            }
+        });
 
         //add edit text views to layout
         l.addView(a_name);
@@ -158,9 +183,37 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle("change account password")
                 .setView(l)
-                .setPositiveButton("Change", null)
+                .setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(a_name.getText().toString().isEmpty() ||
+                                o_pass.getText().toString().isEmpty() ||
+                                n_pass.getText().toString().isEmpty() ||
+                                c_pass.getText().toString().isEmpty())
+                        {
+                            //todo
+                        }
+                        else
+                        {
+                            //works
+                            int id = helper.getID(a_name.getText().toString(), o_pass.getText().toString());
+                            //Toast.makeText(getApplicationContext(),id+"",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
                 .setNegativeButton("Cancel", null)
                 .create();
         d.show();
+    }
+
+    //edit text password helper
+    private EditText password(String hint)
+    {
+        EditText temp = new EditText(this);
+        temp.setHint(hint);
+        temp.setMaxLines(1);
+        temp.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        temp.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        return temp;
     }
 }

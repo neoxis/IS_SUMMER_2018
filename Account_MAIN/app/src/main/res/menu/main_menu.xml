@@ -1,4 +1,5 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="edu.bstiffiastate.cal_task.MainActivity">
@@ -7,22 +8,34 @@
         android:id="@+id/action_settings"
         android:title="Settings" >
         <item
-            android:id="@+id/menu_add_account"
-            android:title="add account" />
-        <item
-            android:id="@+id/menu_account_pass"
-            android:title="->change password" />
-        <item
-            android:id="@+id/menu_add_database"
-            android:title="add database" />
-        <item
-            android:id="@+id/menu_database_name"
-            android:title="->change name" />
-        <item
-            android:id="@+id/menu_database_pass"
-            android:title="->change password" />
-        <item
             android:id="@+id/menu_info"
             android:title="info" />
+        <item
+            android:id="@+id/account_submenu"
+            android:title="account">
+        <menu>
+            <item
+                android:id="@+id/menu_add_account"
+                android:title="add account" />
+            <item
+                android:id="@+id/menu_account_pass"
+                android:title="change password" />
+        </menu>
+        </item>
+        <item
+            android:id="@+id/database_submenu"
+            android:title="database">
+            <menu>
+                <item
+                    android:id="@+id/menu_add_database"
+                    android:title="add database" />
+                <item
+                    android:id="@+id/menu_database_name"
+                    android:title="change username" />
+                <item
+                    android:id="@+id/menu_database_pass"
+                    android:title="change password" />
+            </menu>
+        </item>
     </item>
 </menu>

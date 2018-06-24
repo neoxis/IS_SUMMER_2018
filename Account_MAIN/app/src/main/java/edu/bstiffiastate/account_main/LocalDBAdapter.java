@@ -43,7 +43,33 @@ public class LocalDBAdapter
         return buf.toString();
     }
 
-    //creates local database
+    public int updateAccountPass(String uname, String pass, String npass, String cpass)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        return 0;
+    }
+
+    public int getID(String username, String password)
+    {
+        int id = -1;
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT "+LocalDBHelper.ACCOUNT_ID+
+                " FROM "+LocalDBHelper.ACCOUNT_TABLE+
+                " WHERE "+LocalDBHelper.ACCOUNT_NAME+
+                "=? AND "+LocalDBHelper.ACCOUNT_PASS+
+                "=?", new String[]{username,password});
+        if(c.getCount() > 0)
+        {
+            c.moveToFirst();
+            id = c.getInt(0);
+            c.close();
+        }
+        return 1;
+    }
+
+    /**
+     * creates local database
+     */
     static class LocalDBHelper extends SQLiteOpenHelper
     {
         //database info
@@ -51,6 +77,7 @@ public class LocalDBAdapter
         private static final int DB_VERSION = 1;
 
         //account table
+        //id    | username  | password
         private static final String ACCOUNT_TABLE = "account";
         private static final String ACCOUNT_ID = "id";
         private static final String ACCOUNT_NAME = "username";
