@@ -2,6 +2,7 @@ package edu.bstiffiastate.account_main;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -24,6 +25,23 @@ public class LocalDBAdapter
         return id;
     }
 
+    //get data from database
+    public String getData()
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        String[] columns = {LocalDBHelper.ACCOUNT_ID,LocalDBHelper.ACCOUNT_NAME,LocalDBHelper.ACCOUNT_PASS};
+        Cursor c = db.query(LocalDBHelper.ACCOUNT_TABLE, columns, null, null, null, null, null);
+        StringBuffer buf = new StringBuffer();
+
+        while(c.moveToNext())
+        {
+            int uid = c.getInt(c.getColumnIndex(LocalDBHelper.ACCOUNT_ID));
+            String uname = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_NAME));
+            String upass = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_PASS));
+            buf.append(uid+"\t"+uname+"\t"+upass+"\n");
+        }
+        return buf.toString();
+    }
 
     //creates local database
     static class LocalDBHelper extends SQLiteOpenHelper
