@@ -27,4 +27,4 @@
 | 6/16	| 2:15	| Started demo 2; Created datepicker_test |
 | 6/20	| 3:35	| Created todo_1; started implemented todo list/ sqlite database |
 | 6/22	| 2:40	| Created account_db_test and account_main |
-| 6/23	| 1:15	| Worked on account database ui |
+| 6/23	| 3:00	| Worked on account database ui |
