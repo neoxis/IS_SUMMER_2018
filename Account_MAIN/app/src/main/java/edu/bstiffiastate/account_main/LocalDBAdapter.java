@@ -15,6 +15,7 @@ public class LocalDBAdapter
         helper = new LocalDBHelper(context);
     }
 
+    //insert account into database
     public long insertAccount(String name, String pass)
     {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -25,10 +26,10 @@ public class LocalDBAdapter
         return id;
     }
 
-    //get data from database
+    //get account data from database
     public String getData()
     {
-        SQLiteDatabase db = helper.getWritableDatabase();
+        SQLiteDatabase db = helper.getReadableDatabase();
         String[] columns = {LocalDBHelper.ACCOUNT_ID,LocalDBHelper.ACCOUNT_NAME,LocalDBHelper.ACCOUNT_PASS};
         Cursor c = db.query(LocalDBHelper.ACCOUNT_TABLE, columns, null, null, null, null, null);
         StringBuffer buf = new StringBuffer();
@@ -43,13 +44,18 @@ public class LocalDBAdapter
         return buf.toString();
     }
 
-    public int updateAccountPass(String uname, String pass, String npass, String cpass)
+    //update account password
+    public int updateAccountPass(int id, String pass, String npass)
     {
         SQLiteDatabase db = helper.getWritableDatabase();
-        return 0;
+        ContentValues cv = new ContentValues();
+        cv.put(LocalDBHelper.ACCOUNT_PASS, npass);
+        int count = db.update(LocalDBHelper.ACCOUNT_TABLE,cv,LocalDBHelper.ACCOUNT_ID+" = ?",new String[]{id+""});
+        return count;
     }
 
-    public int getID(String username, String password)
+    //returns user id, used for login
+    public int getAccountID(String username, String password)
     {
         int id = -1;
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -64,7 +70,7 @@ public class LocalDBAdapter
             id = c.getInt(0);
             c.close();
         }
-        return 1;
+        return id;
     }
 
     /**
@@ -83,10 +89,36 @@ public class LocalDBAdapter
         private static final String ACCOUNT_NAME = "username";
         private static final String ACCOUNT_PASS = "password";
 
+        //objects table
+        //id    | type  | title | date  | time   | location
+        private static final String OBJECTS_TABLE = "objects";
+        private static final String OBJECTS_ID = "id";
+        private static final String OBJECTS_TYPE = "type";
+        private static final String OBJECTS_TITLE = "title";
+        private static final String OBJECTS_DATE = "date";
+        private static final String OBJECTS_TIME = "time";
+        private static final String OBJECTS_LOCATION = "location";
+
+        //database table
+        //id    | username  | password
+        private static final String DATABASE_TABLE = "d_base";
+        private static final String DATABASE_ID = "id";
+        private static final String DATABASE_NAME = "username";
+        private static final String DATABASE_PASS = "password";
+
         //built queries
         private static final String CREATE_ACCOUNT = "CREATE TABLE "+ACCOUNT_TABLE
                 +" ("+ACCOUNT_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
                 ACCOUNT_NAME+" VARCHAR(255), "+ACCOUNT_PASS+" VARCHAR(255));";
+
+        private static final String CREATE_OBJECTS = "CREATE TABLE "+OBJECTS_TABLE
+                +" ("+OBJECTS_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                OBJECTS_TYPE+" TEXT NOT NULL, "+OBJECTS_TITLE+" TEXT NOT NULL, "+
+                OBJECTS_DATE+" TEXT, "+OBJECTS_TIME+" TEXT, "+OBJECTS_LOCATION+" TEXT);";
+
+        private static final String CREATE_DATABASE = "CREATE TABLE "+DATABASE_TABLE
+                +" ("+DATABASE_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                DATABASE_NAME+" TEXT, "+DATABASE_PASS+" TEXT);";
 
         private static final String DROP_IF_EXIST = "DROP TABLE IF EXISTS ";
 
@@ -98,12 +130,16 @@ public class LocalDBAdapter
         public void onCreate(SQLiteDatabase db)
         {
             db.execSQL(CREATE_ACCOUNT);
+            db.execSQL(CREATE_OBJECTS);
+            db.execSQL(CREATE_DATABASE);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldV, int newV)
         {
             db.execSQL(DROP_IF_EXIST+ACCOUNT_TABLE);
+            db.execSQL(DROP_IF_EXIST+OBJECTS_TABLE);
+            db.execSQL(DROP_IF_EXIST+DATABASE_TABLE);
             onCreate(db);
         }
     }

@@ -35,6 +35,9 @@
                 <item
                     android:id="@+id/menu_database_pass"
                     android:title="change password" />
+                <item
+                    android:id="@+id/menu_database_new"
+                    android:title="change database" />
             </menu>
         </item>
     </item>

@@ -29,3 +29,4 @@
 | 6/22	| 2:40	| Created account_db_test and account_main |
 | 6/23	| 3:00	| Worked on account database ui |
 | 6/24	| 3:10	| Finished dropdown; worked on edit password |
+| 6/25	| 2:40	| +20 Created local objects table; completed account edit password; created local database table; added alertwindow views for: add db, edit db name, edit db pass, edit db |
