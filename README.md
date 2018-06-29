@@ -29,4 +29,7 @@
 | 6/22	| 2:40	| Created account_db_test and account_main |
 | 6/23	| 3:00	| Worked on account database ui |
 | 6/24	| 3:10	| Finished dropdown; worked on edit password |
-| 6/25	| 2:40	| +20 Created local objects table; completed account edit password; created local database table; added alertwindow views for: add db, edit db name, edit db pass, edit db |
+| 6/25	| 3:20	| Created local objects table; completed account edit password; created local database table; added alertwindow views for: add db, edit db name, edit db pass, edit db: setup online database |
+| 6/26	| 1:30	| Researched online database options |
+| 6/27	| 0:40	| Studied firebase documentation |
+| 6/28	| 1:45	| Started Demo 2 write-up; Started firebase tutorial |

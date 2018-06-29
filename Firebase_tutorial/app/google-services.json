@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "337370947901",
+    "firebase_url": "https://fir-grocery-63065.firebaseio.com",
+    "project_id": "fir-grocery-63065",
+    "storage_bucket": "fir-grocery-63065.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337370947901:android:0c73246a3139b736",
+        "android_client_info": {
+          "package_name": "edu.bstiffiastate.firebase_tutorial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "337370947901-15g14vlkms8iua7qbs773vdc987tl94d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9Q3zjwT5qaQq93CT4YV4OaiQWKhh9c28"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
