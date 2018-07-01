@@ -33,3 +33,4 @@
 | 6/26	| 1:30	| Researched online database options |
 | 6/27	| 0:40	| Studied firebase documentation |
 | 6/28	| 1:45	| Started Demo 2 write-up; Started firebase tutorial |
+| 6/30	| 2:50	| Finally made connection to firebase database!!!! |
