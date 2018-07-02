@@ -34,3 +34,4 @@
 | 6/27	| 0:40	| Studied firebase documentation |
 | 6/28	| 1:45	| Started Demo 2 write-up; Started firebase tutorial |
 | 6/30	| 2:50	| Finally made connection to firebase database!!!! |
+| 7/1	| 3:20	| Finished add account method local/firebase |
