@@ -48,21 +48,21 @@ public class LocalDBAdapter
     }
 
     //update account password
-    public int updateAccountPass(int id, String pass, String npass)
+    public int updateAccountPass(String a_id, String npass)
     {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(LocalDBHelper.ACCOUNT_PASS, npass);
-        int count = db.update(LocalDBHelper.ACCOUNT_TABLE,cv,LocalDBHelper.ACCOUNT_ID+" = ?",new String[]{id+""});
-        return count;
+       SQLiteDatabase db = helper.getWritableDatabase();
+       ContentValues cv = new ContentValues();
+       cv.put(LocalDBHelper.ACCOUNT_PASS, npass);
+       int c = db.update(LocalDBHelper.ACCOUNT_TABLE,cv,LocalDBHelper.ACCOUNT_ACCOUNT+" = ?",new String[]{a_id});
+       return c;
     }
 
     //returns user id, used for login
-    public int getAccountID(String username, String password)
+    public String getAccountID(String username, String password)
     {
-        int id = -1;
+        String aid = "";
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT "+LocalDBHelper.ACCOUNT_ID+
+        Cursor c = db.rawQuery("SELECT "+LocalDBHelper.ACCOUNT_ACCOUNT+
                 " FROM "+LocalDBHelper.ACCOUNT_TABLE+
                 " WHERE "+LocalDBHelper.ACCOUNT_NAME+
                 "=? AND "+LocalDBHelper.ACCOUNT_PASS+
@@ -70,10 +70,10 @@ public class LocalDBAdapter
         if(c.getCount() > 0)
         {
             c.moveToFirst();
-            id = c.getInt(0);
+            aid = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_ACCOUNT));
             c.close();
         }
-        return id;
+        return aid;
     }
 
     /**

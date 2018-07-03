@@ -16,6 +16,8 @@
         <item
             android:id="@+id/menu_account_pass"
             android:title="change password" />
-
+        <item
+            android:id="@+id/menu_account_login"
+            android:title="login" />
     </item>
 </menu>

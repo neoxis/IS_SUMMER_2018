@@ -173,11 +173,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            //works
-                            int id = helper.getAccountID(a_name.getText().toString(), o_pass.getText().toString());
-                            if(id>0)
+                            String id = helper.getAccountID(a_name.getText().toString(), o_pass.getText().toString());
+                            if(id.length() > 0)
                             {
-                                int out = helper.updateAccountPass(id,o_pass.getText().toString(),n_pass.getText().toString());
+                                int out = helper.updateAccountPass(id,n_pass.getText().toString());
+                                DatabaseReference myRef = database.getReference("users").child(id).child("password");
+                                myRef.setValue(n_pass.getText().toString());
                                 Toast.makeText(getApplicationContext(),"Password Changed",Toast.LENGTH_LONG).show();
                             }
                             else Toast.makeText(getApplicationContext(),"Incorrect Username or Password",Toast.LENGTH_LONG).show();
@@ -238,9 +239,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void t(View view)
     {
-        DatabaseReference myRef = database.getReference("users").push();
-        myRef.setValue(new User(myRef.getKey(),"brad","stiff"));
-        Toast.makeText(this, "Clicked",Toast.LENGTH_LONG).show();
+        DatabaseReference myRef = database.getReference("users");
+        myRef.orderByChild("username").equalTo("brad");
+        Toast.makeText(this, myRef.getKey(),Toast.LENGTH_LONG).show();
     }
 
     public void t1(View view)
@@ -281,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         public void setPassword(String password) { this.password = password; }
     }
 
+    @IgnoreExtraProperties
     public static class TEI_Object
     {
         public String type, title, date, time;

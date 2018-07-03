@@ -32,6 +32,7 @@
 | 6/25	| 3:20	| Created local objects table; completed account edit password; created local database table; added alertwindow views for: add db, edit db name, edit db pass, edit db: setup online database |
 | 6/26	| 1:30	| Researched online database options |
 | 6/27	| 0:40	| Studied firebase documentation |
-| 6/28	| 1:45	| Started Demo 2 write-up; Started firebase tutorial |
+| 6/28	| 2:20	| Started Demo 2 write-up; Started firebase tutorial |
 | 6/30	| 2:50	| Finally made connection to firebase database!!!! |
 | 7/1	| 3:20	| Finished add account method local/firebase |
+| 7/2	| 2:00	| Finished edit password password local/firebase |
