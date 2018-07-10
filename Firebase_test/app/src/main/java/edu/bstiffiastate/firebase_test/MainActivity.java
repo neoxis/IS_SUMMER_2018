@@ -15,15 +15,21 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
-    MenuItem info, sign_up, delete_account, login;
+    MenuItem info, sign_up, delete_account, login, change_pass;
+    boolean name_taken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         helper = new LocalDBAdapter(this);
+        name_taken = false;
     }
 
     @Override
@@ -38,11 +45,14 @@ public class MainActivity extends AppCompatActivity {
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
+        //get menu item references
         info = menu.findItem(R.id.menu_info);
         sign_up = menu.findItem(R.id.menu_add_account);
         delete_account = menu.findItem(R.id.menu_delete_account);
         login = menu.findItem(R.id.menu_account_login);
+        change_pass = menu.findItem(R.id.menu_account_pass);
 
+        //toggle menu valid options
         enableMenu();
 
         return true;
@@ -87,8 +97,18 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout l = new LinearLayout(this);
         l.setOrientation(LinearLayout.VERTICAL);
 
-        //create edit text boxes
+        //create edit text boxes and add listeners
         final EditText name = username("username");
+        name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable e) { validateName(name); }
+        });
         final EditText pass = password("password");
 
         //add to layout
@@ -128,6 +148,36 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("cancel", null)
                 .create();
         d.show();
+    }
+
+    //verifies that the username is unique
+    public void validateName(final EditText username)
+    {
+        final String user = username.getText().toString();
+        DatabaseReference ref = database.getReference("users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> si = dataSnapshot.getChildren();
+                Iterator<DataSnapshot> i = si.iterator();
+                while(i.hasNext())
+                {
+                    DataSnapshot ds = i.next();
+                    User u = ds.getValue(User.class);
+
+                    if(u.getUsername().equals(user))
+                    {
+                        username.setError("username is taken");
+                        //name_taken = true;
+                        //Toast.makeText(MainActivity.this,u.getId(),Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
 
     //change account password
@@ -203,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         d.show();
     }
 
+    //removes account from firebase and SQLite
     public void deleteAccount()
     {
         //create linear layout
@@ -213,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText name = username("username");
         final EditText pass = password("password");
 
+        //add views to layout
         l.addView(name);
         l.addView(pass);
 
@@ -240,22 +292,26 @@ public class MainActivity extends AppCompatActivity {
         d.show();
     }
 
+    //toggle selectable menu options
     public void enableMenu()
     {
-        if(helper.toggleSignup() > 0)
+        if(helper.getAccountDBSize() > 0)
         {
             sign_up.setEnabled(false);
             login.setEnabled(false);
 
+            change_pass.setEnabled(true);
             info.setEnabled(true);
             delete_account.setEnabled(true);
         }
         else
         {
             info.setEnabled(false);
+            delete_account.setEnabled(false);
+            change_pass.setEnabled(false);
+
             sign_up.setEnabled(true);
             login.setEnabled(true);
-            delete_account.setEnabled(false);
         }
     }
 
@@ -308,7 +364,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void t(View view)
     {
-        Toast.makeText(getApplicationContext(),helper.toggleSignup()+"",Toast.LENGTH_LONG).show();
+        DatabaseReference ref = database.getReference("users");
+        //ref.orderByChild("username").equalTo("b");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> si = dataSnapshot.getChildren();
+                Iterator<DataSnapshot> i = si.iterator();
+                while(i.hasNext())
+                {
+                    DataSnapshot ds = i.next();
+                    User u = ds.getValue(User.class);
+
+                    if(u.getUsername().equals("b"))
+                    {
+                        Toast.makeText(MainActivity.this,u.getId(),Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //database size
+        //Toast.makeText(getApplicationContext(),helper.getAccountDBSize()+"",Toast.LENGTH_LONG).show();
     }
 
     public void t1(View view)

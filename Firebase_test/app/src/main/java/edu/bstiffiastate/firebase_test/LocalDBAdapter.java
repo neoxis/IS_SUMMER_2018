@@ -39,11 +39,11 @@ public class LocalDBAdapter
 
         while(c.moveToNext())
         {
-            int uid = c.getInt(c.getColumnIndex(LocalDBHelper.ACCOUNT_ID));
+            //int uid = c.getInt(c.getColumnIndex(LocalDBHelper.ACCOUNT_ID));
             String uname = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_NAME));
             String upass = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_PASS));
             String uacco = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_ACCOUNT));
-            buf.append(uid+" Username:\n\t"+uname+"\nPassword:\n\t"+upass+"\nAccount:\n\t"+uacco+"\n");
+            buf.append("Username:\n\t"+uname+"\nPassword:\n\t"+upass+"\nAccount:\n\t"+uacco+"\n");
         }
         return buf.toString();
     }
@@ -85,7 +85,8 @@ public class LocalDBAdapter
         db.execSQL(LocalDBHelper.CREATE_ACCOUNT);
     }
 
-    public Long toggleSignup()
+    //returns the amount of account entries in the SQLite database
+    public Long getAccountDBSize()
     {
         SQLiteDatabase db = helper.getReadableDatabase();
         Long c = DatabaseUtils.queryNumEntries(db, LocalDBHelper.ACCOUNT_TABLE);
