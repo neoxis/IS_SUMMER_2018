@@ -12,10 +12,13 @@
             android:title="info" />
         <item
             android:id="@+id/menu_add_account"
-            android:title="add account" />
+            android:title="signup" />
         <item
             android:id="@+id/menu_account_pass"
             android:title="change password" />
+        <item
+            android:id="@+id/menu_delete_account"
+            android:title="delete account" />
         <item
             android:id="@+id/menu_account_login"
             android:title="login" />

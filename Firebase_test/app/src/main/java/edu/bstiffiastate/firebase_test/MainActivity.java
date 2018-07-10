@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
+    MenuItem info, sign_up, delete_account, login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        info = menu.findItem(R.id.menu_info);
+        sign_up = menu.findItem(R.id.menu_add_account);
+        delete_account = menu.findItem(R.id.menu_delete_account);
+        login = menu.findItem(R.id.menu_account_login);
+
+        enableMenu();
+
         return true;
     }
 
@@ -50,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_account_pass:
                 editAccountPass();
+                return true;
+            case R.id.menu_delete_account:
+                deleteAccount();
                 return true;
             case R.id.menu_info:
                 viewAccount(findViewById(R.id.all));
@@ -108,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 myRef.setValue(u);
                                 Toast.makeText(getApplicationContext(),"Creation Successful",Toast.LENGTH_LONG).show();
+                                enableMenu();
                             }
                         }
                     }
@@ -190,6 +203,62 @@ public class MainActivity extends AppCompatActivity {
         d.show();
     }
 
+    public void deleteAccount()
+    {
+        //create linear layout
+        LinearLayout l = new LinearLayout(this);
+        l.setOrientation(LinearLayout.VERTICAL);
+
+        //create edit text views
+        final EditText name = username("username");
+        final EditText pass = password("password");
+
+        l.addView(name);
+        l.addView(pass);
+
+        AlertDialog d = new AlertDialog.Builder(this)
+                .setTitle("delete account")
+                .setMessage("deleting you account also removes all public objects")
+                .setView(l)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String id = helper.getAccountID(name.getText().toString(), pass.getText().toString());
+                        if(id.length() > 0)
+                        {
+                            DatabaseReference ref = database.getReference("users").child(id);
+                            ref.removeValue();
+                            helper.deleteAccount();
+                            enableMenu();
+                            Toast.makeText(getApplicationContext(),"Account Deleted",Toast.LENGTH_LONG).show();
+                        }
+                        else Toast.makeText(getApplicationContext(),"Incorrect Username or Password",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Cancel",null)
+                .create();
+        d.show();
+    }
+
+    public void enableMenu()
+    {
+        if(helper.toggleSignup() > 0)
+        {
+            sign_up.setEnabled(false);
+            login.setEnabled(false);
+
+            info.setEnabled(true);
+            delete_account.setEnabled(true);
+        }
+        else
+        {
+            info.setEnabled(false);
+            sign_up.setEnabled(true);
+            login.setEnabled(true);
+            delete_account.setEnabled(false);
+        }
+    }
+
     //add object to database
     public void addObject()
     {
@@ -239,9 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void t(View view)
     {
-        DatabaseReference myRef = database.getReference("users");
-        myRef.orderByChild("username").equalTo("brad");
-        Toast.makeText(this, myRef.getKey(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),helper.toggleSignup()+"",Toast.LENGTH_LONG).show();
     }
 
     public void t1(View view)

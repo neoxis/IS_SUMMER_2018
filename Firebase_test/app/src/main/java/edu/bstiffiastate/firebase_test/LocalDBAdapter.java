@@ -4,6 +4,7 @@ package edu.bstiffiastate.firebase_test;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -74,6 +75,21 @@ public class LocalDBAdapter
             c.close();
         }
         return aid;
+    }
+
+    //deletes table from local database
+    public void deleteAccount()
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL(LocalDBHelper.DROP_IF_EXIST+LocalDBHelper.ACCOUNT_TABLE);
+        db.execSQL(LocalDBHelper.CREATE_ACCOUNT);
+    }
+
+    public Long toggleSignup()
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Long c = DatabaseUtils.queryNumEntries(db, LocalDBHelper.ACCOUNT_TABLE);
+        return c;
     }
 
     /**

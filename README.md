@@ -36,3 +36,5 @@
 | 6/30	| 2:50	| Finally made connection to firebase database!!!! |
 | 7/1	| 3:20	| Finished add account method local/firebase |
 | 7/2	| 2:00	| Finished edit password password local/firebase |
+| 7/3	| 1:45	| Worked on Demo 2 write-up |
+| 7/9	| 2:20	| Finished delete account methods, menu listeners (enabled items) |
