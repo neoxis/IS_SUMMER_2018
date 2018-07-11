@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
     MenuItem info, sign_up, delete_account, login, change_pass;
-    boolean name_taken;
+    boolean invalid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         helper = new LocalDBAdapter(this);
-        name_taken = false;
+        invalid = false;
     }
 
     @Override
@@ -76,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_info:
                 viewAccount(findViewById(R.id.all));
                 return true;
+            case R.id.menu_account_login:
+                login();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -97,18 +101,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout l = new LinearLayout(this);
         l.setOrientation(LinearLayout.VERTICAL);
 
-        //create edit text boxes and add listeners
+        //create edit text boxes
         final EditText name = username("username");
-        name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence cs, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable e) { validateName(name); }
-        });
         final EditText pass = password("password");
 
         //add to layout
@@ -116,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         l.addView(pass);
 
         //create alert window
-        AlertDialog d = new AlertDialog.Builder(this)
+        final AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle("add account")
                 .setView(l)
                 .setPositiveButton("add", new DialogInterface.OnClickListener() {
@@ -148,6 +142,30 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("cancel", null)
                 .create();
         d.show();
+
+        //initial positive button disable
+        d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+        //add text edit listener
+        name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence cs, int i, int i1, int i2) { }
+
+            //using this area for form validation
+            @Override
+            public void afterTextChanged(Editable e) {
+                validateName(name);
+                //todo invalid does not work
+                if(name.getText().length() == 0 || invalid)
+                {
+                    d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+                else d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+        });
     }
 
     //verifies that the username is unique
@@ -160,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> si = dataSnapshot.getChildren();
                 Iterator<DataSnapshot> i = si.iterator();
+                invalid = false;
                 while(i.hasNext())
                 {
                     DataSnapshot ds = i.next();
@@ -168,8 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     if(u.getUsername().equals(user))
                     {
                         username.setError("username is taken");
-                        //name_taken = true;
-                        //Toast.makeText(MainActivity.this,u.getId(),Toast.LENGTH_LONG).show();
+                        invalid = true;
                         break;
                     }
                 }
@@ -178,6 +196,76 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
+    }
+
+    //pulls account data from firebase and stores in SQLite
+    public void login()
+    {
+        //create layout
+        LinearLayout l = new LinearLayout(this);
+        l.setOrientation(LinearLayout.VERTICAL);
+
+        //create edit text boxes
+        final EditText name = username("username");
+        final EditText pass = password("password");
+
+        //add to layout
+        l.addView(name);
+        l.addView(pass);
+
+        //create alert window
+        final AlertDialog d = new AlertDialog.Builder(this)
+                .setTitle("login to account")
+                .setView(l)
+                .setPositiveButton("login", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(name.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {
+                            Toast.makeText(getApplicationContext(),"enter username and password",Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            DatabaseReference ref = database.getReference("users");
+                            ref.addListenerForSingleValueEvent(new ValueEventListener()
+                            {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot)
+                                {
+                                    Iterable<DataSnapshot> si = dataSnapshot.getChildren();
+                                    Iterator<DataSnapshot> i = si.iterator();
+
+                                    if(!i.hasNext()) {
+                                        Toast.makeText(getApplicationContext(), "Account Not Found", Toast.LENGTH_LONG).show();
+                                        return; //end function if empty
+                                    }
+                                    while(i.hasNext())
+                                    {
+                                        DataSnapshot ds = i.next();
+                                        User u = ds.getValue(User.class);
+
+                                        if(u.getUsername().equals(name.getText().toString()) && u.getPassword().equals(pass.getText().toString()))
+                                        {
+                                            long id = helper.insertAccount(u.getUsername(),u.getPassword(),u.getId());
+                                            if(id <= 0) Toast.makeText(getApplicationContext(),"Login Unsuccessful",Toast.LENGTH_LONG).show();
+                                            else
+                                            {
+                                                Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
+                                                enableMenu();
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) { }
+                            });
+                        }
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        d.show();
     }
 
     //change account password
@@ -297,7 +385,8 @@ public class MainActivity extends AppCompatActivity {
     {
         if(helper.getAccountDBSize() > 0)
         {
-            sign_up.setEnabled(false);
+            //todo commented sign_up enables for testing database
+            //sign_up.setEnabled(false);
             login.setEnabled(false);
 
             change_pass.setEnabled(true);
@@ -310,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             delete_account.setEnabled(false);
             change_pass.setEnabled(false);
 
-            sign_up.setEnabled(true);
+            //sign_up.setEnabled(true);
             login.setEnabled(true);
         }
     }

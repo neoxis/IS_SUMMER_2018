@@ -39,3 +39,4 @@
 | 7/3	| 1:45	| Worked on Demo 2 write-up |
 | 7/9	| 2:20	| Finished delete account methods, menu listeners (enabled items) |
 | 7/10	| 2:55	| Finished menu listeners, username taken error |
+| 7/11	| 2:35	| Finished login method; Got add account to not allow blank usernames, trouble with blocking if username taken |
