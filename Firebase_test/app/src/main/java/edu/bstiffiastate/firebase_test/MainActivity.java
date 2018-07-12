@@ -116,8 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(name.getText().toString().isEmpty() || pass.getText().toString().isEmpty())
-                        {
+                        if(name.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {
                             Toast.makeText(getApplicationContext(),"enter username and password",Toast.LENGTH_LONG).show();
                         }
                         else
