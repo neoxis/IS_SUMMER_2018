@@ -9,12 +9,16 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (item.getItemId())
         {
+            case R.id.action_add_object:
+                addObject();
+                return true;
             case R.id.menu_add_account:
                 add();
                 return true;
@@ -406,7 +413,63 @@ public class MainActivity extends AppCompatActivity {
     //add object to database
     public void addObject()
     {
+        LinearLayout main = new LinearLayout(this);
+        main.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout row1 = new LinearLayout(this);
+        row1.setOrientation(LinearLayout.HORIZONTAL);
+        row1.setGravity(Gravity.CENTER_VERTICAL);
+
+        ToggleButton pub_pri = new ToggleButton(this);
+        pub_pri.setTextOn("public");
+        pub_pri.setTextOff("private");
+        pub_pri.setText("private");
+
+        RadioGroup obj_type = new RadioGroup(this);
+        obj_type.setOrientation(RadioGroup.HORIZONTAL);
+
+
+        RadioButton r_task= new RadioButton(this);
+        r_task.setText("task");
+
+        RadioButton r_event= new RadioButton(this);
+        r_event.setText("event");
+
+        RadioButton r_item= new RadioButton(this);
+        r_item.setText("item");
+
+        EditText date = new EditText(this);
+        date.setHint("date");
+        date.setInputType(InputType.TYPE_CLASS_DATETIME);
+        date.setMaxLines(1);
+
+        EditText title = new EditText(this);
+        title.setHint("title");
+        title.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+        title.setMaxLines(1);
+
+        obj_type.addView(r_task);
+        obj_type.addView(r_event);
+        obj_type.addView(r_item);
+
+        row1.addView(pub_pri);
+        row1.addView(obj_type);
+
+        main.addView(row1);
+        main.addView(date);
+        main.addView(title);
+
+
+        AlertDialog d = new AlertDialog.Builder(this)
+                .setTitle("add object")
+                .setView(main)
+                .setPositiveButton("Add", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+        d.show();
+
         //todo
+        //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
     }
 
     //edit object in database

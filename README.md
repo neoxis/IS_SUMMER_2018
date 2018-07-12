@@ -40,3 +40,4 @@
 | 7/9	| 2:20	| Finished delete account methods, menu listeners (enabled items) |
 | 7/10	| 2:55	| Finished menu listeners, username taken error |
 | 7/11	| 6:10	| Finished login method; Got add account to not allow blank usernames, trouble with blocking if username taken; worked on Demo 2 write-up; Finished login/add account and edit password/delete account pictures for tutorial section |
+| 7/12	| 1:15	| Added LocalDBAdapter class to demo_2 and firebase connection; Recreated add object form programmatically |

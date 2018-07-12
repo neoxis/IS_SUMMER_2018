@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "201325806314",
+    "firebase_url": "https://cal-task.firebaseio.com",
+    "project_id": "cal-task",
+    "storage_bucket": "cal-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201325806314:android:fb2ab10a6d6f307e",
+        "android_client_info": {
+          "package_name": "edu.bstiffiastate.cal_task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201325806314-bslfp233lbiea3n2a9elk4h4su332mh3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR9N2jeEf9ljtSko2yyTbG77AtelInhJo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201325806314:android:b71f887aa2ffb498",
+        "android_client_info": {
+          "package_name": "edu.bstiffiastate.caltask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201325806314-ovt6g0jbu1tsmfr9cnkr3j1o37q82ek2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.bstiffiastate.caltask",
+            "certificate_hash": "e0acd6afcba3dc32190646b9a0f38459efcae4b9"
+          }
+        },
+        {
+          "client_id": "201325806314-bslfp233lbiea3n2a9elk4h4su332mh3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR9N2jeEf9ljtSko2yyTbG77AtelInhJo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201325806314-bslfp233lbiea3n2a9elk4h4su332mh3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

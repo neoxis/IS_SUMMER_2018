@@ -10,7 +10,21 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="Settings" >
+        <item
+            android:id="@+id/menu_info"
+            android:title="info" />
+        <item
+            android:id="@+id/menu_add_account"
+            android:title="signup" />
+        <item
+            android:id="@+id/menu_account_pass"
+            android:title="change password" />
+        <item
+            android:id="@+id/menu_delete_account"
+            android:title="delete account" />
+        <item
+            android:id="@+id/menu_account_login"
+            android:title="login" />
+    </item>
 </menu>
