@@ -1,5 +1,6 @@
 package edu.bstiffiastate.firebase_test;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -410,9 +412,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     //add object to database
     public void addObject()
     {
+        //create objects
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
 
@@ -420,34 +424,35 @@ public class MainActivity extends AppCompatActivity {
         row1.setOrientation(LinearLayout.HORIZONTAL);
         row1.setGravity(Gravity.CENTER_VERTICAL);
 
-        ToggleButton pub_pri = new ToggleButton(this);
+        final ToggleButton pub_pri = new ToggleButton(this);
         pub_pri.setTextOn("public");
         pub_pri.setTextOff("private");
         pub_pri.setText("private");
 
-        RadioGroup obj_type = new RadioGroup(this);
+        final RadioGroup obj_type = new RadioGroup(this);
         obj_type.setOrientation(RadioGroup.HORIZONTAL);
 
-
-        RadioButton r_task= new RadioButton(this);
+        final RadioButton r_task= new RadioButton(this);
         r_task.setText("task");
+        r_task.setId(R.id.radio_task);
 
         RadioButton r_event= new RadioButton(this);
         r_event.setText("event");
+        r_event.setId(R.id.radio_event);
 
         RadioButton r_item= new RadioButton(this);
         r_item.setText("item");
+        r_item.setId(R.id.radio_item);
 
-        EditText date = new EditText(this);
-        date.setHint("date");
+        final EditText date = username("date");
         date.setInputType(InputType.TYPE_CLASS_DATETIME);
-        date.setMaxLines(1);
+        date.setEnabled(false);
 
-        EditText title = new EditText(this);
-        title.setHint("title");
+        final EditText title = username("title");
         title.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-        title.setMaxLines(1);
+        title.setEnabled(false);
 
+        //build layout
         obj_type.addView(r_task);
         obj_type.addView(r_event);
         obj_type.addView(r_item);
@@ -459,14 +464,83 @@ public class MainActivity extends AppCompatActivity {
         main.addView(date);
         main.addView(title);
 
-
-        AlertDialog d = new AlertDialog.Builder(this)
+        //radio group action listener
+        obj_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            InputMethodManager imm;
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch(i)
+                {
+                    case R.id.radio_task:
+                        date.setEnabled(true);
+                        title.setEnabled(true);
+                        date.requestFocus();
+                        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(date, InputMethodManager.SHOW_IMPLICIT);
+                        return;
+                    case R.id.radio_event:
+                        date.setEnabled(true);
+                        title.setEnabled(true);
+                        date.requestFocus();
+                        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(date, InputMethodManager.SHOW_IMPLICIT);
+                        return;
+                    case R.id.radio_item:
+                        date.setEnabled(false);
+                        title.setEnabled(true);
+                        title.requestFocus();
+                        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
+                        return;
+                    default:
+                        Toast.makeText(getApplicationContext(),i+"",Toast.LENGTH_LONG).show();
+                        return;
+                }
+            }
+        });
+        
+        final AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle("add object")
                 .setView(main)
-                .setPositiveButton("Add", null)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(pub_pri.isChecked())
+                        {
+                            DatabaseReference myRef = database.getReference("objects").child(helper.getAccountID()+"-table").push();
+                            String type = ((RadioButton)obj_type.findViewById(obj_type.getCheckedRadioButtonId())).getText().toString();
+                            TEI_Object t = new TEI_Object(type,title.getText().toString(),date.getText().toString(),null);
+                            myRef.setValue(t);
+                            Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
+                        }
+                        else Toast.makeText(getApplicationContext(), "Private",Toast.LENGTH_LONG).show();
+                    }
+                })
                 .setNegativeButton("Cancel", null)
                 .create();
         d.show();
+
+        //disable positiveButton
+        d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+        //needs to be attached after positiveButton is created
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(title.getText().length() == 0 || obj_type.getCheckedRadioButtonId() == -1)
+                {
+                    d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+                else d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+        });
+
 
         //todo
         //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
@@ -547,11 +621,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void t1(View view)
     {
-        DatabaseReference myRef = database.getReference("objects").push();
+        DatabaseReference myRef = database.getReference("objects").child(helper.getAccountID()+"-table").push();
 
         TEI_Object t = new TEI_Object("task","worked","7/3",null);
         myRef.setValue(t);
-        Toast.makeText(this, "Clicked",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, helper.getAccountID(),Toast.LENGTH_LONG).show();
     }
 
     @IgnoreExtraProperties

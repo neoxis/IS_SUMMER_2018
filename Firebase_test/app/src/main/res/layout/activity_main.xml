@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!--
+
     <Button
         android:id="@+id/adduser"
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         android:text="add item"
         app:layout_constraintLeft_toRightOf="@+id/adduser" />
 
-    -->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

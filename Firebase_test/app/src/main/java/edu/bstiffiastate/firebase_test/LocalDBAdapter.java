@@ -77,6 +77,24 @@ public class LocalDBAdapter
         return aid;
     }
 
+    //gets account id for background firebase pushing
+    public String getAccountID()
+    {
+        String aid = "";
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT "+LocalDBHelper.ACCOUNT_ACCOUNT+
+                " FROM "+LocalDBHelper.ACCOUNT_TABLE+
+                " WHERE "+LocalDBHelper.ACCOUNT_ID+
+                "=?", new String[]{"1"});
+        if(c.getCount() > 0)
+        {
+            c.moveToFirst();
+            aid = c.getString(c.getColumnIndex(LocalDBHelper.ACCOUNT_ACCOUNT));
+            c.close();
+        }
+        return aid;
+    }
+
     //deletes table from local database
     public void deleteAccount()
     {
