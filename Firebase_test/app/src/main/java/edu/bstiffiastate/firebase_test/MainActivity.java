@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        
+
         final AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle("add object")
                 .setView(main)
