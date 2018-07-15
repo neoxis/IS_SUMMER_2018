@@ -29,6 +29,19 @@ public class LocalDBAdapter
         return id;
     }
 
+    //insert object into local database
+    public long insertItem(String type, String title, String date, String time)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(LocalDBHelper.OBJECTS_TYPE, type);
+        cv.put(LocalDBHelper.OBJECTS_TITLE, title);
+        cv.put(LocalDBHelper.OBJECTS_DATE, date);
+        cv.put(LocalDBHelper.OBJECTS_TIME, time);
+        long id = db.insert(LocalDBHelper.OBJECTS_TABLE,null,cv);
+        return id;
+    }
+
     //get account data from database
     public String getData()
     {
@@ -48,6 +61,24 @@ public class LocalDBAdapter
         return buf.toString();
     }
 
+    public String getObjects()
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String[] columns = {LocalDBHelper.OBJECTS_ID,LocalDBHelper.OBJECTS_TYPE,LocalDBHelper.OBJECTS_TITLE,LocalDBHelper.OBJECTS_DATE,LocalDBHelper.OBJECTS_TIME};
+        Cursor c = db.query(LocalDBHelper.OBJECTS_TABLE, columns, null, null, null, null, null);
+        StringBuffer buf = new StringBuffer();
+
+        buf.append("type\ttitle\tdate\ttime\n");
+        while(c.moveToNext())
+        {
+            String type = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TYPE));
+            String title = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TITLE));
+            String date = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_DATE));
+            String time = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TIME));
+            buf.append(type+"\t"+title+"\t"+date+"\t"+time+"\n");
+        }
+        return buf.toString();
+    }
     //update account password
     public int updateAccountPass(String a_id, String npass)
     {

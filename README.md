@@ -42,3 +42,4 @@
 | 7/11	| 6:10	| Finished login method; Got add account to not allow blank usernames, trouble with blocking if username taken; worked on Demo 2 write-up; Finished login/add account and edit password/delete account pictures for tutorial section |
 | 7/12	| 4:25	| Added LocalDBAdapter class to demo_2 and firebase connection; Recreated add object form programmatically; Finished add object layout and listeners, firebase object creation successful |
 | 7/13	| 3:40	| Worked on Demo 2; Updated trello to reflect demo 2 write-up sections to complete; Finished: scope, usecase picture, communication diagram, usecase table, communication table, tutorial login and account creation, sqlite database, tutorial:account-information:editing:deleting-account |
+| 7/14	| 1:25	| Worked on demo 2; Finished add private object method |

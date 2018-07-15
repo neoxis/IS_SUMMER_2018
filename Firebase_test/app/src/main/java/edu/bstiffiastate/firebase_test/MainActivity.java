@@ -505,15 +505,22 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(pub_pri.isChecked())
+                        String type = ((RadioButton)obj_type.findViewById(obj_type.getCheckedRadioButtonId())).getText().toString();
+                        TEI_Object t = new TEI_Object(type,title.getText().toString(),date.getText().toString(),null);
+                        if(pub_pri.isChecked()) //public
                         {
                             DatabaseReference myRef = database.getReference("objects").child(helper.getAccountID()+"-table").push();
-                            String type = ((RadioButton)obj_type.findViewById(obj_type.getCheckedRadioButtonId())).getText().toString();
-                            TEI_Object t = new TEI_Object(type,title.getText().toString(),date.getText().toString(),null);
+                            //String type = ((RadioButton)obj_type.findViewById(obj_type.getCheckedRadioButtonId())).getText().toString();
+                            //TEI_Object t = new TEI_Object(type,title.getText().toString(),date.getText().toString(),null);
                             myRef.setValue(t);
                             Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
                         }
-                        else Toast.makeText(getApplicationContext(), "Private",Toast.LENGTH_LONG).show();
+                        else //private
+                        {
+                            long id = helper.insertItem(type,t.getTitle(),t.getDate(),t.getTime());
+                            if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
+                            else Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -626,6 +633,18 @@ public class MainActivity extends AppCompatActivity {
         TEI_Object t = new TEI_Object("task","worked","7/3",null);
         myRef.setValue(t);
         Toast.makeText(this, helper.getAccountID(),Toast.LENGTH_LONG).show();
+    }
+
+    public void t2(View view){
+        long id = helper.insertItem("item","worked","","");
+        if(id <= 0) Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_LONG).show();
+            else Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
+    }
+
+    public void t3(View view)
+    {
+        String data = helper.getObjects();
+        Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
     }
 
     @IgnoreExtraProperties

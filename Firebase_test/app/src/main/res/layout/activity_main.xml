@@ -11,15 +11,15 @@
         android:id="@+id/adduser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add user"
-        android:onClick="t"/>
+        android:text="add item"
+        android:onClick="t2"/>
 
     <Button
         android:id="@+id/additem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="t1"
-        android:text="add item"
+        android:onClick="t3"
+        android:text="view item"
         app:layout_constraintLeft_toRightOf="@+id/adduser" />
 
 
