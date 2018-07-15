@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
@@ -15,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
     MenuItem info, sign_up, delete_account, login, change_pass;
+    ArrayAdapter<TEI_Object> mAdapter;
     boolean invalid;
 
     @Override
@@ -566,6 +568,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void updateUI()
+    {
+        ArrayList<TEI_Object> list = helper.get_objects();
+        if(mAdapter == null)
+        {
+            mAdapter = new ArrayAdapter<>(this,R.layout.row_item,R.id.list_objects, list);
+        }
+    }
+
     /**
      * Helper Methods
      */
@@ -651,8 +662,8 @@ public class MainActivity extends AppCompatActivity {
     public static class User
     {
         public String id;
-        public String username;
-        public String password;
+        String username;
+        String password;
 
         public User() {}
 
