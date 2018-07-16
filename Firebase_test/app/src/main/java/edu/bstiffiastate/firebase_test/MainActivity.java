@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         helper = new LocalDBAdapter(this);
         invalid = false;
+        updateUI();
     }
 
     @Override
@@ -571,10 +573,9 @@ public class MainActivity extends AppCompatActivity {
     public void updateUI()
     {
         ArrayList<TEI_Object> list = helper.get_objects();
-        if(mAdapter == null)
-        {
-            mAdapter = new ArrayAdapter<>(this,R.layout.row_item,R.id.list_objects, list);
-        }
+        CustomListAdapter adapter = new CustomListAdapter(this,list);
+        ListView obj_list_view = (ListView) findViewById(R.id.list_objects);
+        obj_list_view.setAdapter(adapter);
     }
 
     /**
