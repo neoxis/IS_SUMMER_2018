@@ -44,3 +44,4 @@
 | 7/13	| 3:40	| Worked on Demo 2; Updated trello to reflect demo 2 write-up sections to complete; Finished: scope, usecase picture, communication diagram, usecase table, communication table, tutorial login and account creation, sqlite database, tutorial:account-information:editing:deleting-account |
 | 7/14	| 3:15	| Worked on demo 2; Finished add private object method; Started customAdapter class; Removed customAdapter; Created get_objects method; Tried ArrayList adapters |
 | 7/15	| 1:10	| Created CustomListAdapter class; Finally got a list adapter to work!!! |
+| 7/16	| 5:05	| Created listAdapter classes; created delete methods; attached delete methods; attached listAdapters; created updateUI methods; added updateUI methods to add_object() |

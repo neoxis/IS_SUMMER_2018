@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical" >
 
     <TextView
-        android:id="@+id/task_due_date"
+        android:id="@+id/grocery_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:minWidth="50sp" />
-    <TextView
-        android:id="@+id/task_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/task_due_date"
-        android:layout_toLeftOf="@+id/task_delete"
+        android:layout_toLeftOf="@+id/got_item"
+        android:layout_toStartOf="@id/got_item"
+        android:layout_marginLeft="3dp"
         android:text="Hello"
         android:textSize="20sp"/>
     <ImageButton
-        android:id="@+id/task_delete"
+        android:id="@+id/got_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/check_button"

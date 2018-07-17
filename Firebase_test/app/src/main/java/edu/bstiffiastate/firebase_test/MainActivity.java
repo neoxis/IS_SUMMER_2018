@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
     MenuItem info, sign_up, delete_account, login, change_pass;
-    ArrayAdapter<TEI_Object> mAdapter;
+    ItemListAdapter adapter;
     boolean invalid;
 
     @Override
@@ -523,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             long id = helper.insertItem(type,t.getTitle(),t.getDate(),t.getTime());
                             if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
-                            else Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
+                            else updateUI(); Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
                         }
                     }
                 })
@@ -552,7 +551,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //todo
         //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
     }
@@ -572,10 +570,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI()
     {
-        ArrayList<TEI_Object> list = helper.get_objects();
-        CustomListAdapter adapter = new CustomListAdapter(this,list);
+        ArrayList<TEI_Object> list = helper.get_objects("item");
         ListView obj_list_view = (ListView) findViewById(R.id.list_objects);
-        obj_list_view.setAdapter(adapter);
+        if(adapter == null)
+        {
+            adapter = new ItemListAdapter(this,list);
+            obj_list_view.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.updateItems(list);
+        }
     }
 
     /**

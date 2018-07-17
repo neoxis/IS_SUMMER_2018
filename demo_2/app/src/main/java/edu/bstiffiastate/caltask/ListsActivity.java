@@ -1,5 +1,6 @@
 package edu.bstiffiastate.caltask;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Created by bradj on 6/1/2018.
@@ -16,26 +21,53 @@ import android.widget.ListView;
 
 public class ListsActivity extends Fragment
 {
+    LocalDBAdapter helper;
     private ListView todo_tasks, g_list;
-
-    String[] t_l = {"Task 1","Task 2","Task 3"};
-    String[] g_l = {"Item 1","Item 2","Item 3"};
+    static ItemListAdapter adapter;
+    static TaskListAdapter t_adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.lists_fragment, container, false);
 
-        //Fill Tasks for demo
-        ArrayAdapter<String> tList = new ArrayAdapter<String>(getActivity(),R.layout.task_list_item,R.id.task_title,t_l);
-        todo_tasks = rootView.findViewById(R.id.todo_list);
-        todo_tasks.setAdapter(tList);
+        helper = new LocalDBAdapter(rootView.getContext());
 
-        //Fill Today Events for demo
-        ArrayAdapter<String> todayE = new ArrayAdapter<String>(getActivity(),R.layout.grocery_list_item,R.id.grocery_item,g_l);
+        todo_tasks = rootView.findViewById(R.id.todo_list);
         g_list = rootView.findViewById(R.id.grocery_list);
-        g_list.setAdapter(todayE);
+
+        t_updateUI();
+        updateUI();
 
         return rootView;
+    }
+
+
+    public void updateUI()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("item");
+        if(adapter == null)
+        {
+            adapter = new ItemListAdapter(getContext(),list);
+            g_list.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.updateItems(list);
+        }
+    }
+
+    public void t_updateUI()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
+        if(t_adapter == null)
+        {
+            t_adapter = new TaskListAdapter(getContext(),list);
+            todo_tasks.setAdapter(t_adapter);
+        }
+        else
+        {
+            t_adapter.updateItems(list);
+        }
     }
 }
