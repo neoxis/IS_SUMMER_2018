@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ItemListAdapter extends BaseAdapter
 {
-    LocalDBAdapter helper;
+    private LocalDBAdapter helper;
     private Context mContext;
     private ArrayList<MainActivity.TEI_Object> items;
 
@@ -74,8 +74,8 @@ public class ItemListAdapter extends BaseAdapter
 
         public ItemViewHolder(View view)
         {
-            item_title = (TextView)view.findViewById(R.id.grocery_item);
-            item_done = (ImageButton)view.findViewById(R.id.got_item);
+            item_title = view.findViewById(R.id.grocery_item);
+            item_done = view.findViewById(R.id.got_item);
         }
     }
 }

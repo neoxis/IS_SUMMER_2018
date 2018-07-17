@@ -193,6 +193,15 @@ public class LocalDBAdapter
         return DatabaseUtils.queryNumEntries(db, LocalDBHelper.ACCOUNT_TABLE);
     }
 
+    public int updateTask(String o_title,String date, String title)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(LocalDBHelper.OBJECTS_DATE, date);
+        cv.put(LocalDBHelper.OBJECTS_TITLE, title);
+        return db.update(LocalDBHelper.OBJECTS_TABLE,cv,LocalDBHelper.OBJECTS_TITLE+" = ?",new String[]{o_title});
+    }
+
     /**
      * creates local database
      */

@@ -45,3 +45,4 @@
 | 7/14	| 3:15	| Worked on demo 2; Finished add private object method; Started customAdapter class; Removed customAdapter; Created get_objects method; Tried ArrayList adapters |
 | 7/15	| 1:10	| Created CustomListAdapter class; Finally got a list adapter to work!!! |
 | 7/16	| 5:05	| Created listAdapter classes; created delete methods; attached delete methods; attached listAdapters; created updateUI methods; added updateUI methods to add_object() |
+| 7/17	| 3:10	| Finished Demo 2 |
