@@ -21,7 +21,7 @@
 | 6/12	| 1:40	| Finished button navigation example; Added button navigation/cal from scratch pictures to demo 1 write-up |
 | 6/13	| 3:25	| Finished demo 1: tutorial, app navigation, calendar depreciation, references |
 | 6/14	| 1:00	| Finished Demo 1 |
-| ===	| ===	| XXX DEMO 0NE ENDED [TOTAL HOURS: 38:40] XXX |
+| ===	| ===	| # XXX DEMO 0NE ENDED [TOTAL HOURS: 38:40] XXX |
 | 6/14	| 1:35	| Researched SQLite database; mapped out database communication; wrote database method pseudo-code |
 | 6/15	| 4:45	| Added localdbHelper class; re-installed android studio update crash |
 | 6/16	| 2:15	| Started demo 2; Created datepicker_test |
