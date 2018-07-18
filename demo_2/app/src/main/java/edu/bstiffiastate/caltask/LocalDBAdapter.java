@@ -114,10 +114,11 @@ public class LocalDBAdapter
             String type = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TYPE));
             if(type.equals(search_type))
             {
+                String id = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_ID));
                 String title = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TITLE));
                 String date = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_DATE));
                 String time = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TIME));
-                obj = new MainActivity.TEI_Object(type,title,date,time);
+                obj = new MainActivity.TEI_Object(id,type,title,date,time);
                 list.add(obj);
             }
         }
@@ -171,13 +172,6 @@ public class LocalDBAdapter
         return aid;
     }
 
-    public void deleteItem(String item)
-    {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        db.delete(LocalDBHelper.OBJECTS_TABLE, LocalDBHelper.OBJECTS_TITLE+" = ?",new String[]{item});
-        db.close();
-    }
-
     //deletes table from local database
     public void deleteAccount()
     {
@@ -193,13 +187,42 @@ public class LocalDBAdapter
         return DatabaseUtils.queryNumEntries(db, LocalDBHelper.ACCOUNT_TABLE);
     }
 
-    public int updateTask(String o_title,String date, String title)
+    /**
+     * Object Methods
+     */
+
+    public void deleteObject(String id)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(LocalDBHelper.OBJECTS_TABLE, LocalDBHelper.OBJECTS_ID+" = ?",new String[]{id});
+        db.close();
+    }
+
+    /**
+     * Task Methods
+     */
+
+    //updates a task in the local databse
+    public int updateTask(String id, String date, String title)
     {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(LocalDBHelper.OBJECTS_DATE, date);
         cv.put(LocalDBHelper.OBJECTS_TITLE, title);
-        return db.update(LocalDBHelper.OBJECTS_TABLE,cv,LocalDBHelper.OBJECTS_TITLE+" = ?",new String[]{o_title});
+        return db.update(LocalDBHelper.OBJECTS_TABLE,cv,LocalDBHelper.OBJECTS_ID+" = ?",new String[]{id});
+    }
+
+    /**
+     * Item Methods
+     */
+
+    //updates an item in the local database
+    public int updateItem(String id, String title)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(LocalDBHelper.OBJECTS_TITLE, title);
+        return db.update(LocalDBHelper.OBJECTS_TABLE,cv,LocalDBHelper.OBJECTS_ID+" = ?",new String[]{id});
     }
 
     /**

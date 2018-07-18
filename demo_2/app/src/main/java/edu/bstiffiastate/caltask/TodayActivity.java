@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 /**
@@ -20,8 +22,8 @@ public class TodayActivity extends Fragment
 {
     private ListView t_events, t_tasks;
 
-    //String[] e = {"No events scheduled"};
-    //String[] t = {"Task 1","Task 2","Task 3"};
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     static TaskListAdapter t_adapter;
     static EventListAdapter e_adapter;
     LocalDBAdapter helper;
@@ -35,6 +37,7 @@ public class TodayActivity extends Fragment
 
         t_events = rootView.findViewById(R.id.today_events);
         t_tasks = rootView.findViewById(R.id.today_tasks);
+
 
         e_updateUI();
         t_updateUI();

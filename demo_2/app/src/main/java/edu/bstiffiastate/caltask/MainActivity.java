@@ -1,5 +1,6 @@
 package edu.bstiffiastate.caltask;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,8 +39,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,21 +53,8 @@ public class MainActivity extends AppCompatActivity {
     MenuItem info, sign_up, delete_account, login, change_pass;
     ItemListAdapter adapter;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         helper = new LocalDBAdapter(this);
-        //updateUI();
+
     }
 
 
@@ -519,7 +511,30 @@ public class MainActivity extends AppCompatActivity {
         r_item.setId(R.id.radio_item);
 
         final EditText date = username("date");
-        date.setInputType(InputType.TYPE_CLASS_DATETIME);
+        date.setFocusable(false);
+
+
+        final Calendar cal = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener d_picker = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, monthOfYear);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel(date,cal);
+            }
+        };
+
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dpd = new DatePickerDialog(view.getContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                dpd.show();
+            }
+        });
+        //date.setInputType(InputType.TYPE_CLASS_DATETIME);
         date.setEnabled(false);
 
         final EditText title = username("title");
@@ -634,32 +649,13 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
     }
 
-    //edit object in database
-    public void editObject()
+    private void updateLabel(EditText date, Calendar calendar)
     {
-        //todo
+        String format = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        date.setText(sdf.format(calendar.getTime()));
     }
 
-    //delete object from database
-    public void deleteObject()
-    {
-        //todo
-    }
-
-    public void updateUI()
-    {
-        ArrayList<TEI_Object> list = helper.get_objects("item");
-        ListView obj_list_view = (ListView) findViewById(R.id.today_tasks);
-        if(adapter == null)
-        {
-            adapter = new ItemListAdapter(this,list);
-            obj_list_view.setAdapter(adapter);
-        }
-        else
-        {
-            adapter.updateItems(list);
-        }
-    }
     /**
      * Helper Methods
      */
@@ -687,9 +683,9 @@ public class MainActivity extends AppCompatActivity {
     @IgnoreExtraProperties
     public static class User
     {
-        public String id;
-        String username;
-        String password;
+        private String id;
+        private String username;
+        private String password;
 
         public User() {}
 
@@ -716,17 +712,30 @@ public class MainActivity extends AppCompatActivity {
     @IgnoreExtraProperties
     public static class TEI_Object
     {
-        public String type, title, date, time;
+        private String id, type, title, date, time;
 
         public TEI_Object() {}
 
-        public TEI_Object(String type, String title, String date, String time)
+        public TEI_Object(String id, String type, String title, String date, String time)
         {
+            this.id = id;
             this.type = type;
             this.title = title;
             this.date = date;
             this.time = time;
         }
+
+        public TEI_Object(String type, String title, String date, String time)
+        {
+            id = "-1";
+            this.type = type;
+            this.title = title;
+            this.date = date;
+            this.time = time;
+        }
+        public String getId() { return id; }
+
+        public void setId(String id)  { this.id = id; }
 
         public String getType() { return type; }
 

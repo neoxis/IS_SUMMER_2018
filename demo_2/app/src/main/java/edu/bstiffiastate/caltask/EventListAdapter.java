@@ -30,7 +30,7 @@ public class EventListAdapter extends BaseAdapter
 
     @Override
     public View getView(int i, View view, ViewGroup vg) {
-        MainActivity.TEI_Object cur = (MainActivity.TEI_Object) getItem(i);
+        final MainActivity.TEI_Object cur = (MainActivity.TEI_Object) getItem(i);
         EventViewHolder viewHolder;
 
         if(view == null)
@@ -48,9 +48,7 @@ public class EventListAdapter extends BaseAdapter
         viewHolder.e_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View p = (View) view.getParent();
-                TextView t = p.findViewById(R.id.task_title);
-                helper.deleteItem(t.getText().toString());
+                helper.deleteObject(cur.getId());
                 updateItems(helper.get_objects("event"));
             }
         });

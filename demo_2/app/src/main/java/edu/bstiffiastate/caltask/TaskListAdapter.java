@@ -1,5 +1,6 @@
 package edu.bstiffiastate.caltask;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -8,13 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class TaskListAdapter extends BaseAdapter
 {
@@ -36,7 +43,7 @@ public class TaskListAdapter extends BaseAdapter
 
     @Override
     public View getView(int i, View view, ViewGroup vg) {
-        MainActivity.TEI_Object cur = (MainActivity.TEI_Object) getItem(i);
+        final MainActivity.TEI_Object cur = (MainActivity.TEI_Object) getItem(i);
         TaskViewHolder viewHolder;
 
         if(view == null)
@@ -56,16 +63,14 @@ public class TaskListAdapter extends BaseAdapter
                 View p = (View) view.getParent();
                 TextView td = p.findViewById(R.id.task_due_date);
                 TextView tt = p.findViewById(R.id.task_title);
-                editTask(td.getText().toString(),tt.getText().toString());
+                editTask(cur.getId(),td.getText().toString(),tt.getText().toString());
             }
         });
 
         viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View p = (View) view.getParent();
-                TextView t = p.findViewById(R.id.task_title);
-                helper.deleteItem(t.getText().toString());
+                helper.deleteObject(cur.getId());
                 ListsActivity.t_adapter.updateItems(helper.get_objects("task"));
                 TodayActivity.t_adapter.updateItems(helper.get_objects("task"));
             }
@@ -73,7 +78,7 @@ public class TaskListAdapter extends BaseAdapter
         return view;
     }
 
-    private void editTask(String date, final String title)
+    private void editTask(final String t_id, String date,  String title)
     {
         //create objects
         LinearLayout l = new LinearLayout(mContext);
@@ -82,8 +87,29 @@ public class TaskListAdapter extends BaseAdapter
         final EditText edit_t_date = new EditText(mContext);
         edit_t_date.setText(date);
         edit_t_date.setHint("date");
-        edit_t_date.setMaxLines(1);
-        edit_t_date.setInputType(InputType.TYPE_CLASS_DATETIME);
+        edit_t_date.setFocusable(false);
+
+
+        final Calendar cal = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener d_picker = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, monthOfYear);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel(edit_t_date,cal);
+            }
+        };
+
+        edit_t_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dpd = new DatePickerDialog(mContext,d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                dpd.show();
+            }
+        });
 
         final EditText edit_t_title = new EditText(mContext);
         edit_t_title.setText(title);
@@ -100,7 +126,7 @@ public class TaskListAdapter extends BaseAdapter
                 .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        int id = helper.updateTask(title,edit_t_date.getText().toString(),edit_t_title.getText().toString());
+                        int id = helper.updateTask(t_id,edit_t_date.getText().toString(),edit_t_title.getText().toString());
                         if(id <= 0) Toast.makeText(mContext,"Update Failed",Toast.LENGTH_LONG).show();
                         else
                         {
@@ -113,6 +139,13 @@ public class TaskListAdapter extends BaseAdapter
                 .create();
         d.show();
 
+    }
+
+    private void updateLabel(EditText date, Calendar calendar)
+    {
+        String format = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        date.setText(sdf.format(calendar.getTime()));
     }
 
     //updates listview upon object entry
