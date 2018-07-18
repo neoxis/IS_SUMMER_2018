@@ -46,3 +46,5 @@
 | 7/15	| 1:10	| Created CustomListAdapter class; Finally got a list adapter to work!!! |
 | 7/16	| 5:05	| Created listAdapter classes; created delete methods; attached delete methods; attached listAdapters; created updateUI methods; added updateUI methods to add_object() |
 | 7/17	| 3:10	| Finished Demo 2 |
+| ===	| ===	| XXX DEMO TWO ENDED [TOTAL HOURS: 70:55 ] XXX |
+| 7/17	| 0:10	| Started demo three |
