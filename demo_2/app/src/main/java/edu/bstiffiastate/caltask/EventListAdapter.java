@@ -13,11 +13,10 @@ import java.util.ArrayList;
 public class EventListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
-    private Context mContext;
     private ArrayList<MainActivity.TEI_Object> events;
 
-    public EventListAdapter(Context context, ArrayList<MainActivity.TEI_Object> objects)
-    { mContext=context; events=objects; helper = new LocalDBAdapter(context); }
+    EventListAdapter(ArrayList<MainActivity.TEI_Object> objects)
+    { events=objects; helper = new LocalDBAdapter(MainActivity.getAppContext()); }
 
     @Override
     public int getCount() { return events.size(); }
@@ -35,7 +34,7 @@ public class EventListAdapter extends BaseAdapter
 
         if(view == null)
         {
-            view = LayoutInflater.from(mContext).
+            view = LayoutInflater.from(MainActivity.getAppContext()).
                     inflate(R.layout.task_list_item, vg, false);
             viewHolder = new EventViewHolder(view);
             view.setTag(viewHolder);

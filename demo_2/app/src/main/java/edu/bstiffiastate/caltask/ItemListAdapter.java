@@ -19,11 +19,10 @@ import java.util.ArrayList;
 public class ItemListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
-    private Context mContext;
     private ArrayList<MainActivity.TEI_Object> items;
 
-    ItemListAdapter(Context context, ArrayList<MainActivity.TEI_Object> objects)
-    { mContext = context; items = objects; helper = new LocalDBAdapter(context);}
+    ItemListAdapter(ArrayList<MainActivity.TEI_Object> objects)
+    { items = objects; helper = new LocalDBAdapter(MainActivity.getAppContext());}
 
     @Override
     public int getCount() { return items.size(); }
@@ -41,7 +40,7 @@ public class ItemListAdapter extends BaseAdapter
 
         if(view == null)
         {
-            view = LayoutInflater.from(mContext).
+            view = LayoutInflater.from(MainActivity.getAppContext()).
                     inflate(R.layout.grocery_list_item, vg, false);
             viewHolder = new ItemViewHolder(view);
             view.setTag(viewHolder);
@@ -78,10 +77,10 @@ public class ItemListAdapter extends BaseAdapter
     private void editItem(final String i_id, String title)
     {
         //create objects
-        LinearLayout l = new LinearLayout(mContext);
+        LinearLayout l = new LinearLayout(MainActivity.getAppContext());
         l.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText item_title = new EditText(mContext);
+        final EditText item_title = new EditText(MainActivity.getAppContext());
         item_title.setText(title);
         item_title.setHint("item");
         item_title.setMaxLines(1);
@@ -89,14 +88,14 @@ public class ItemListAdapter extends BaseAdapter
 
         l.addView(item_title);
 
-        final AlertDialog d = new AlertDialog.Builder(mContext)
+        final AlertDialog d = new AlertDialog.Builder(MainActivity.getAppContext())
                 .setTitle("Edit Item")
                 .setView(l)
                 .setPositiveButton("edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int id = helper.updateItem(i_id,item_title.getText().toString());
-                        if(id <= 0) Toast.makeText(mContext,"Update Failed",Toast.LENGTH_LONG).show();
+                        if(id <= 0) Toast.makeText(MainActivity.getAppContext(),"Update Failed",Toast.LENGTH_LONG).show();
                         else
                         {
                             ListsActivity.adapter.updateItems(helper.get_objects("item"));

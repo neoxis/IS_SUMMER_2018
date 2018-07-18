@@ -1,15 +1,12 @@
 package edu.bstiffiastate.caltask;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,7 +24,7 @@ public class ListsActivity extends Fragment
     static TaskListAdapter t_adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.lists_fragment, container, false);
 
@@ -48,13 +45,10 @@ public class ListsActivity extends Fragment
         ArrayList<MainActivity.TEI_Object> list = helper.get_objects("item");
         if(adapter == null)
         {
-            adapter = new ItemListAdapter(getContext(),list);
+            adapter = new ItemListAdapter(list);
             g_list.setAdapter(adapter);
         }
-        else
-        {
-            adapter.updateItems(list);
-        }
+        else adapter.updateItems(list);
     }
 
     public void t_updateUI()
@@ -62,12 +56,9 @@ public class ListsActivity extends Fragment
         ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
         if(t_adapter == null)
         {
-            t_adapter = new TaskListAdapter(getContext(),list);
+            t_adapter = new TaskListAdapter(list);
             todo_tasks.setAdapter(t_adapter);
         }
-        else
-        {
-            t_adapter.updateItems(list);
-        }
+        else t_adapter.updateItems(list);
     }
 }

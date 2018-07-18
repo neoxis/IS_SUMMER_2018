@@ -1,7 +1,6 @@
 package edu.bstiffiastate.caltask;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -16,8 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,11 +23,11 @@ import java.util.Locale;
 public class TaskListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
-    private Context mContext;
+    //private Context mContext;
     private ArrayList<MainActivity.TEI_Object> tasks;
 
-    public TaskListAdapter(Context context, ArrayList<MainActivity.TEI_Object> objects)
-    { mContext=context; tasks=objects; helper = new LocalDBAdapter(context); }
+    TaskListAdapter(ArrayList<MainActivity.TEI_Object> objects)
+    { tasks=objects; helper = new LocalDBAdapter(MainActivity.getAppContext()); }
 
     @Override
     public int getCount() { return tasks.size(); }
@@ -48,7 +45,7 @@ public class TaskListAdapter extends BaseAdapter
 
         if(view == null)
         {
-            view = LayoutInflater.from(mContext).
+            view = LayoutInflater.from(MainActivity.getAppContext()).
                     inflate(R.layout.task_list_item, vg, false);
             viewHolder = new TaskViewHolder(view);
             view.setTag(viewHolder);
@@ -81,10 +78,10 @@ public class TaskListAdapter extends BaseAdapter
     private void editTask(final String t_id, String date,  String title)
     {
         //create objects
-        LinearLayout l = new LinearLayout(mContext);
+        LinearLayout l = new LinearLayout(MainActivity.getAppContext());
         l.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText edit_t_date = new EditText(mContext);
+        final EditText edit_t_date = new EditText(MainActivity.getAppContext());
         edit_t_date.setText(date);
         edit_t_date.setHint("date");
         edit_t_date.setFocusable(false);
@@ -106,12 +103,12 @@ public class TaskListAdapter extends BaseAdapter
         edit_t_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dpd = new DatePickerDialog(mContext,d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog dpd = new DatePickerDialog(MainActivity.getAppContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
                 dpd.show();
             }
         });
 
-        final EditText edit_t_title = new EditText(mContext);
+        final EditText edit_t_title = new EditText(MainActivity.getAppContext());
         edit_t_title.setText(title);
         edit_t_title.setHint("title");
         edit_t_title.setMaxLines(1);
@@ -120,14 +117,14 @@ public class TaskListAdapter extends BaseAdapter
         l.addView(edit_t_date);
         l.addView(edit_t_title);
 
-        final AlertDialog d = new AlertDialog.Builder(mContext)
+        final AlertDialog d = new AlertDialog.Builder(MainActivity.getAppContext())
                 .setTitle("Edit Task")
                 .setView(l)
                 .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int id = helper.updateTask(t_id,edit_t_date.getText().toString(),edit_t_title.getText().toString());
-                        if(id <= 0) Toast.makeText(mContext,"Update Failed",Toast.LENGTH_LONG).show();
+                        if(id <= 0) Toast.makeText(MainActivity.getAppContext(),"Update Failed",Toast.LENGTH_LONG).show();
                         else
                         {
                             ListsActivity.t_adapter.updateItems(helper.get_objects("task"));

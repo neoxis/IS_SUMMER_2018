@@ -62,46 +62,7 @@ public class LocalDBAdapter
         return buf.toString();
     }
 
-    public String getObjects()
-    {
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String[] columns = {LocalDBHelper.OBJECTS_ID,LocalDBHelper.OBJECTS_TYPE,LocalDBHelper.OBJECTS_TITLE,LocalDBHelper.OBJECTS_DATE,LocalDBHelper.OBJECTS_TIME};
-        Cursor c = db.query(LocalDBHelper.OBJECTS_TABLE, columns, null, null, null, null, null);
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("type\ttitle\tdate\ttime\n");
-        while(c.moveToNext())
-        {
-            String type = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TYPE));
-            String title = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TITLE));
-            String date = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_DATE));
-            String time = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TIME));
-            buf.append(type).append("\t").append(title).append("\t").append(date).append("\t").append(time).append("\n");
-        }
-        c.close();
-        return buf.toString();
-    }
-
-    public ArrayList<MainActivity.TEI_Object> get_objects()
-    {
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String[] columns = {LocalDBHelper.OBJECTS_ID,LocalDBHelper.OBJECTS_TYPE,LocalDBHelper.OBJECTS_TITLE,LocalDBHelper.OBJECTS_DATE,LocalDBHelper.OBJECTS_TIME};
-        Cursor c = db.query(LocalDBHelper.OBJECTS_TABLE, columns, null, null, null, null, null);
-        ArrayList<MainActivity.TEI_Object> list = new ArrayList<>();
-        MainActivity.TEI_Object obj;
-
-        while(c.moveToNext()) {
-            String type = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TYPE));
-            String title = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TITLE));
-            String date = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_DATE));
-            String time = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TIME));
-            obj = new MainActivity.TEI_Object(type,title,date,time);
-            list.add(obj);
-        }
-        c.close();
-        return list;
-    }
-
+    //find local objects by type
     public ArrayList<MainActivity.TEI_Object> get_objects(String search_type)
     {
         SQLiteDatabase db = helper.getReadableDatabase();

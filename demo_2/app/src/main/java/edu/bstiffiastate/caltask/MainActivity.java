@@ -18,7 +18,6 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -40,7 +38,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     LocalDBAdapter helper;
     MenuItem info, sign_up, delete_account, login, change_pass;
-    ItemListAdapter adapter;
+    private static Context context;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -77,9 +74,12 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         helper = new LocalDBAdapter(this);
+        context = getApplicationContext();
 
     }
 
+    //returns the context for the application
+    public static Context getAppContext() { return context; }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -141,24 +141,18 @@ public class MainActivity extends AppCompatActivity {
             switch (position)
             {
                 case 0:
-                    TodayActivity tab1 = new TodayActivity();
-                    return tab1;
+                    return new TodayActivity();
                 case 1:
-                    ListsActivity tab2 = new ListsActivity();
-                    return tab2;
+                    return new ListsActivity();
                 case 2:
-                    CalendarActivity tab3 = new CalendarActivity();
-                    return tab3;
+                    return new CalendarActivity();
                 default:
                     return null;
             }
         }
 
         @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
+        public int getCount() { return 3; }
     }
 
     /**
@@ -563,26 +557,20 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.radio_task:
                         date.setEnabled(true);
                         title.setEnabled(true);
-                        date.requestFocus();
-                        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(date, InputMethodManager.SHOW_IMPLICIT);
                         return;
                     case R.id.radio_event:
                         date.setEnabled(true);
                         title.setEnabled(true);
-                        date.requestFocus();
-                        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(date, InputMethodManager.SHOW_IMPLICIT);
                         return;
                     case R.id.radio_item:
                         date.setEnabled(false);
+                        date.setText("");
                         title.setEnabled(true);
                         title.requestFocus();
                         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
                         return;
                     default:
-                        Toast.makeText(getApplicationContext(),i+"",Toast.LENGTH_LONG).show();
                         return;
                 }
             }
@@ -714,9 +702,9 @@ public class MainActivity extends AppCompatActivity {
     {
         private String id, type, title, date, time;
 
-        public TEI_Object() {}
+        TEI_Object() {}
 
-        public TEI_Object(String id, String type, String title, String date, String time)
+        TEI_Object(String id, String type, String title, String date, String time)
         {
             this.id = id;
             this.type = type;
@@ -725,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
             this.time = time;
         }
 
-        public TEI_Object(String type, String title, String date, String time)
+        TEI_Object(String type, String title, String date, String time)
         {
             id = "-1";
             this.type = type;
