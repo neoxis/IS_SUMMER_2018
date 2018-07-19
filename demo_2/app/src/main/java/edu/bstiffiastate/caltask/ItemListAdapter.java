@@ -2,6 +2,8 @@ package edu.bstiffiastate.caltask;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -14,15 +16,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class ItemListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
+    private FirebaseDatabase database;
     private ArrayList<MainActivity.TEI_Object> items;
 
     ItemListAdapter(ArrayList<MainActivity.TEI_Object> objects)
-    { items = objects; helper = new LocalDBAdapter(MainActivity.getAppContext());}
+    {
+        database = FirebaseDatabase.getInstance();
+        items = objects;
+        helper = new LocalDBAdapter(MainActivity.getAppContext());
+    }
 
     @Override
     public int getCount() { return items.size(); }
@@ -48,22 +58,45 @@ public class ItemListAdapter extends BaseAdapter
         else viewHolder = (ItemViewHolder)view.getTag();
 
         viewHolder.item_title.setText(cur.getTitle());
-        viewHolder.item_title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                View p = (View) view.getParent();
-                TextView it = p.findViewById(R.id.grocery_item);
-                editItem(cur.getId(), it.getText().toString());
-            }
-        });
-        viewHolder.item_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helper.deleteObject(cur.getId());
-                updateItems(helper.get_objects("item"));
-            }
-        });
 
+        if(cur.getId().startsWith("-")) //public
+        {
+            viewHolder.item_title.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.item_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                }
+            });
+            viewHolder.item_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DatabaseReference ref = database.getReference("objects").child(helper.getAccountID()+"-table").child(cur.getId());
+                    ref.removeValue();
+                    MainActivity.getF_items().remove(cur);
+                    updateItemLists();
+                }
+            });
+        }
+        else
+        {
+            viewHolder.item_title.setTextColor(viewHolder.c);
+            //delete private item
+            viewHolder.item_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+            viewHolder.item_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    helper.deleteObject(cur.getId());
+                    updateItemLists();
+                }
+            });
+        }
         return view;
     }
 
@@ -108,16 +141,25 @@ public class ItemListAdapter extends BaseAdapter
 
     }
 
+    public void updateItemLists()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("item");
+        list.addAll(MainActivity.getF_items());
+        ListsActivity.adapter.updateItems(list);
+    }
+
     //holds item view object attributes
     private class ItemViewHolder
     {
         TextView item_title;
         ImageButton item_done;
+        ColorStateList c;
 
         ItemViewHolder(View view)
         {
             item_title = view.findViewById(R.id.grocery_item);
             item_done = view.findViewById(R.id.got_item);
+            c = item_title.getTextColors();
         }
     }
 }

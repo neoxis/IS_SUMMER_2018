@@ -48,3 +48,5 @@
 | 7/17	| 3:10	| Finished Demo 2 |
 | ===	| ===	| XXX DEMO TWO ENDED [TOTAL HOURS: 70:55 ] XXX |
 | 7/17	| 3:20	| Started demo three; Upgraded some date entry methods |
+| 7/18/	| 4:20	| Added firebase stuff to task adapter & debugged |
+| 7/19	| 3:10	| Fixed add and delete methods for local/public event/task/item;

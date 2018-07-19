@@ -38,6 +38,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
@@ -45,7 +46,10 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseDatabase database;
+    DatabaseReference obj_table;
+    private static ArrayList<TEI_Object> f_events, f_tasks, f_items;
+
     LocalDBAdapter helper;
     MenuItem info, sign_up, delete_account, login, change_pass;
     private static Context context;
@@ -74,10 +78,106 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        database = FirebaseDatabase.getInstance();
         helper = new LocalDBAdapter(this);
         context = getApplicationContext();
 
+        f_events = new ArrayList<>();
+        f_tasks = new ArrayList<>();
+        f_items = new ArrayList<>();
+
+        if(helper.getAccountDBSize() != 0)
+        {
+            f_events = new ArrayList<>();
+            f_tasks = new ArrayList<>();
+            f_items = new ArrayList<>();
+            obj_table = database.getReference("objects").child(helper.getAccountID()+"-table");
+            obj_table.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Iterable<DataSnapshot> si = dataSnapshot.getChildren();
+                    Iterator<DataSnapshot> i = si.iterator();
+                    f_events.clear();
+                    f_tasks.clear();
+                    f_items.clear();
+                    while(i.hasNext())
+                    {
+                        DataSnapshot ds = i.next();
+                        MainActivity.TEI_Object o = ds.getValue(MainActivity.TEI_Object.class);
+                        if(o.getType().equals("task"))
+                        {
+                            //Toast.makeText(getAppContext(),o.getTitle(),Toast.LENGTH_LONG).show();
+                            f_tasks.add(o);
+                            updateTaskListViews();
+                            //t_updateUI();
+                        }
+                        if(o.getType().equals("event"))
+                        {
+                            f_events.add(o);
+                            updateEventListViews();
+                        }
+                        if(o.getType().equals("item"))
+                        {
+                            f_items.add(o);
+                            updateItemListViews();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
     }
+
+    public void updateTaskListViews()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
+        list.addAll(f_tasks);
+        if(TodayActivity.t_adapter == null)
+        {
+            TodayActivity.t_adapter = new TaskListAdapter(list);
+            TodayActivity.getT_tasks().setAdapter(TodayActivity.t_adapter);
+        }
+        else TodayActivity.t_adapter.updateItems(list);
+
+        if(ListsActivity.t_adapter == null)
+        {
+            ListsActivity.t_adapter = new TaskListAdapter(list);
+            ListsActivity.getTodo_tasks().setAdapter(ListsActivity.t_adapter);
+        }
+        else ListsActivity.t_adapter.updateItems(list);
+    }
+
+    public void updateItemListViews()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("item");
+        list.addAll(f_items);
+        if(ListsActivity.adapter == null)
+        {
+            ListsActivity.adapter = new ItemListAdapter(list);
+            ListsActivity.getG_list().setAdapter(ListsActivity.adapter);
+        }
+        else ListsActivity.adapter.updateItems(list);
+    }
+
+    public void updateEventListViews()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("event");
+        list.addAll(f_events);
+        if(TodayActivity.e_adapter == null)
+        {
+            TodayActivity.e_adapter = new EventListAdapter(list);
+            TodayActivity.getT_events().setAdapter(TodayActivity.e_adapter);
+        }
+        else TodayActivity.e_adapter.updateItems(list);
+    }
+
+    public static ArrayList<TEI_Object> getF_items() { return f_items; }
+
+    public static ArrayList<TEI_Object> getF_events() { return f_events; }
+
+    public static ArrayList<TEI_Object> getF_tasks() { return f_tasks; }
 
     //returns the context for the application
     public static Context getAppContext() { return context; }
@@ -588,6 +688,7 @@ public class MainActivity extends AppCompatActivity {
                         if(pub_pri.isChecked()) //public
                         {
                             DatabaseReference myRef = database.getReference("objects").child(helper.getAccountID()+"-table").push();
+                            t.setId(myRef.getKey());
                             myRef.setValue(t);
                             Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
                         }
@@ -597,13 +698,9 @@ public class MainActivity extends AppCompatActivity {
                             if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
                             else
                             {
-                                if(type.equals("item"))ListsActivity.adapter.updateItems(helper.get_objects(type));
-                                if(type.equals("task"))
-                                {
-                                    TodayActivity.t_adapter.updateItems(helper.get_objects(type));
-                                    ListsActivity.t_adapter.updateItems(helper.get_objects(type));
-                                }
-                                if(type.equals("event")) TodayActivity.e_adapter.updateItems(helper.get_objects(type));
+                                if(type.equals("item")) updateItemListViews();
+                                if(type.equals("task")) updateTaskListViews();
+                                if(type.equals("event")) updateEventListViews();
                                 Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
                             }
                         }
@@ -638,6 +735,7 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
     }
 
+    //used to set the textEdit text to the selected date
     private void updateLabel(EditText date, Calendar calendar)
     {
         String format = "MM/dd/yy";
@@ -716,7 +814,7 @@ public class MainActivity extends AppCompatActivity {
 
         TEI_Object(String type, String title, String date, String time)
         {
-            id = "-1";
+            id = "";
             this.type = type;
             this.title = title;
             this.date = date;

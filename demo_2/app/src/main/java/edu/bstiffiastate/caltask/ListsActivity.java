@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ListsActivity extends Fragment
 {
     LocalDBAdapter helper;
-    private ListView todo_tasks, g_list;
+    private static ListView todo_tasks, g_list;
     static ItemListAdapter adapter;
     static TaskListAdapter t_adapter;
 
@@ -39,10 +39,25 @@ public class ListsActivity extends Fragment
         return rootView;
     }
 
+    public static ListView getTodo_tasks()
+    {
+        return todo_tasks;
+    }
+
+    public static ListView getG_list() {
+        return g_list;
+    }
+
+    public void updateLists()
+    {
+        updateUI();
+        t_updateUI();
+    }
 
     public void updateUI()
     {
         ArrayList<MainActivity.TEI_Object> list = helper.get_objects("item");
+        list.addAll(MainActivity.getF_items());
         if(adapter == null)
         {
             adapter = new ItemListAdapter(list);
@@ -54,6 +69,7 @@ public class ListsActivity extends Fragment
     public void t_updateUI()
     {
         ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
+        list.addAll(MainActivity.getF_tasks());
         if(t_adapter == null)
         {
             t_adapter = new TaskListAdapter(list);

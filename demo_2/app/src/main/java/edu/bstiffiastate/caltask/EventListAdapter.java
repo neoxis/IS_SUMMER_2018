@@ -1,22 +1,33 @@
 package edu.bstiffiastate.caltask;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class EventListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
+    private FirebaseDatabase database;
     private ArrayList<MainActivity.TEI_Object> events;
 
     EventListAdapter(ArrayList<MainActivity.TEI_Object> objects)
-    { events=objects; helper = new LocalDBAdapter(MainActivity.getAppContext()); }
+    {
+        events=objects;
+        database = FirebaseDatabase.getInstance();
+        helper = new LocalDBAdapter(MainActivity.getAppContext());
+    }
 
     @Override
     public int getCount() { return events.size(); }
@@ -44,14 +55,49 @@ public class EventListAdapter extends BaseAdapter
         viewHolder.e_date.setText(cur.getDate());
         viewHolder.e_title.setText(cur.getTitle());
 
-        viewHolder.e_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helper.deleteObject(cur.getId());
-                updateItems(helper.get_objects("event"));
-            }
-        });
+        if(cur.getId().startsWith("-")) //public
+        {
+            viewHolder.e_date.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.e_title.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.e_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DatabaseReference ref = database.getReference("objects").child(helper.getAccountID()+"-table").child(cur.getId());
+                    ref.removeValue();
+                    MainActivity.getF_events().remove(cur);
+                    updateEventLists();
+                }
+            });
+        }
+        else
+        {
+            viewHolder.e_date.setTextColor(viewHolder.c);
+            viewHolder.e_title.setTextColor(viewHolder.c);
+            //delete private item
+            viewHolder.e_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+            viewHolder.e_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    helper.deleteObject(cur.getId());
+                    updateEventLists();
+                }
+            });
+        }
         return view;
+    }
+
+    private void updateEventLists()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("event");
+        list.addAll(MainActivity.getF_events());
+        //updateItems(list);
+        TodayActivity.e_adapter.updateItems(list);
     }
 
     //updates listview upon object entry
@@ -65,11 +111,14 @@ public class EventListAdapter extends BaseAdapter
     {
         TextView e_date, e_title;
         ImageButton e_done;
+        ColorStateList c;
+
         public EventViewHolder(View view)
         {
             e_date = view.findViewById(R.id.task_due_date);
             e_title = view.findViewById(R.id.task_title);
             e_done = view.findViewById(R.id.task_delete);
+            c = e_title.getTextColors();
         }
     }
 }

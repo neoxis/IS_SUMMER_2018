@@ -2,6 +2,8 @@ package edu.bstiffiastate.caltask;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,11 +28,16 @@ import java.util.Locale;
 public class TaskListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
+    FirebaseDatabase database;
+
     //private Context mContext;
     private ArrayList<MainActivity.TEI_Object> tasks;
 
     TaskListAdapter(ArrayList<MainActivity.TEI_Object> objects)
-    { tasks=objects; helper = new LocalDBAdapter(MainActivity.getAppContext()); }
+    {
+        tasks=objects;
+        helper = new LocalDBAdapter(MainActivity.getAppContext());
+        database = FirebaseDatabase.getInstance();}
 
     @Override
     public int getCount() { return tasks.size(); }
@@ -54,31 +64,62 @@ public class TaskListAdapter extends BaseAdapter
 
         viewHolder.t_date.setText(cur.getDate());
         viewHolder.t_title.setText(cur.getTitle());
-        viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                View p = (View) view.getParent();
-                TextView td = p.findViewById(R.id.task_due_date);
-                TextView tt = p.findViewById(R.id.task_title);
-                editTask(cur.getId(),td.getText().toString(),tt.getText().toString());
-            }
-        });
 
-        viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helper.deleteObject(cur.getId());
-                ListsActivity.t_adapter.updateItems(helper.get_objects("task"));
-                TodayActivity.t_adapter.updateItems(helper.get_objects("task"));
-            }
-        });
+        if(cur.getId().startsWith("-")) //public
+        {
+            viewHolder.t_date.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.t_title.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                }
+            });
+            viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DatabaseReference ref = database.getReference("objects").child(helper.getAccountID()+"-table").child(cur.getId());
+                    ref.removeValue();
+                    MainActivity.getF_tasks().remove(cur);
+                    updateTaskLists();
+                }
+            });
+        }
+        else
+        {
+            viewHolder.t_date.setTextColor(viewHolder.c);
+            viewHolder.t_title.setTextColor(viewHolder.c);
+            //delete private item
+            viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+            viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    helper.deleteObject(cur.getId());
+                    updateTaskLists();
+                }
+            });
+        }
         return view;
     }
 
-    private void editTask(final String t_id, String date,  String title)
+    private void updateTaskLists()
+    {
+        ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
+        list.addAll(MainActivity.getF_tasks());
+        ListsActivity.t_adapter.updateItems(list);
+        TodayActivity.t_adapter.updateItems(list);
+    }
+
+    private void editTask(final String t_id, String date, String title)
     {
         //create objects
-        LinearLayout l = new LinearLayout(MainActivity.getAppContext());
+        final LinearLayout l = new LinearLayout(MainActivity.getAppContext());
         l.setOrientation(LinearLayout.VERTICAL);
 
         final EditText edit_t_date = new EditText(MainActivity.getAppContext());
@@ -127,8 +168,10 @@ public class TaskListAdapter extends BaseAdapter
                         if(id <= 0) Toast.makeText(MainActivity.getAppContext(),"Update Failed",Toast.LENGTH_LONG).show();
                         else
                         {
-                            ListsActivity.t_adapter.updateItems(helper.get_objects("task"));
-                            TodayActivity.t_adapter.updateItems(helper.get_objects("task"));
+                            ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
+                            list.addAll(MainActivity.getF_tasks());
+                            ListsActivity.t_adapter.updateItems(list);
+                            TodayActivity.t_adapter.updateItems(list);
                         }
                     }
                 })
@@ -156,11 +199,13 @@ public class TaskListAdapter extends BaseAdapter
     {
         TextView t_date, t_title;
         ImageButton t_done;
+        ColorStateList c;
         TaskViewHolder(View view)
         {
             t_date = view.findViewById(R.id.task_due_date);
             t_title = view.findViewById(R.id.task_title);
             t_done = view.findViewById(R.id.task_delete);
+            c = t_title.getTextColors();
         }
     }
 }
