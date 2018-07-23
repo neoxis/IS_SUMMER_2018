@@ -1,5 +1,6 @@
 package edu.bstiffiastate.caltask;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -86,50 +88,50 @@ public class MainActivity extends AppCompatActivity {
         f_tasks = new ArrayList<>();
         f_items = new ArrayList<>();
 
-        if(helper.getAccountDBSize() != 0)
+        if(helper.getAccountDBSize() == 1)
         {
-            f_events = new ArrayList<>();
-            f_tasks = new ArrayList<>();
-            f_items = new ArrayList<>();
-            obj_table = database.getReference("objects").child(helper.getAccountID()+"-table");
-            obj_table.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Iterable<DataSnapshot> si = dataSnapshot.getChildren();
-                    Iterator<DataSnapshot> i = si.iterator();
-                    f_events.clear();
-                    f_tasks.clear();
-                    f_items.clear();
-                    while(i.hasNext())
-                    {
-                        DataSnapshot ds = i.next();
-                        MainActivity.TEI_Object o = ds.getValue(MainActivity.TEI_Object.class);
-                        if(o.getType().equals("task"))
-                        {
-                            //Toast.makeText(getAppContext(),o.getTitle(),Toast.LENGTH_LONG).show();
-                            f_tasks.add(o);
-                            updateTaskListViews();
-                            //t_updateUI();
-                        }
-                        if(o.getType().equals("event"))
-                        {
-                            f_events.add(o);
-                            updateEventListViews();
-                        }
-                        if(o.getType().equals("item"))
-                        {
-                            f_items.add(o);
-                            updateItemListViews();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) { }
-            });
+            addFirebaseListener();
         }
     }
 
+    private void addFirebaseListener()
+    {
+        obj_table = database.getReference("objects").child(helper.getAccountID()+"-table");
+        obj_table.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> si = dataSnapshot.getChildren();
+                Iterator<DataSnapshot> i = si.iterator();
+                f_events.clear();
+                f_tasks.clear();
+                f_items.clear();
+                while(i.hasNext())
+                {
+                    DataSnapshot ds = i.next();
+                    MainActivity.TEI_Object o = ds.getValue(MainActivity.TEI_Object.class);
+                    if(o.getType().equals("task"))
+                    {
+                        f_tasks.add(o);
+                        updateTaskListViews();
+                    }
+                    if(o.getType().equals("event"))
+                    {
+                        f_events.add(o);
+                        updateEventListViews();
+                    }
+                    if(o.getType().equals("item"))
+                    {
+                        f_items.add(o);
+                        updateItemListViews();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+    
     public void updateTaskListViews()
     {
         ArrayList<MainActivity.TEI_Object> list = helper.get_objects("task");
@@ -207,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 addObject();
                 return true;
             case R.id.menu_add_account:
-                add();
+                addAccount();
                 return true;
             case R.id.menu_account_pass:
                 editAccountPass();
@@ -270,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //add account
-    public void add()
+    public void addAccount()
     {
         //create layout
         LinearLayout l = new LinearLayout(this);
@@ -307,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                             else
                             {
                                 myRef.setValue(u);
+                                addFirebaseListener();
                                 Toast.makeText(getApplicationContext(),"Creation Successful",Toast.LENGTH_LONG).show();
                                 enableMenu();
                             }
@@ -590,6 +593,9 @@ public class MainActivity extends AppCompatActivity {
         pub_pri.setTextOff("private");
         pub_pri.setText("private");
 
+        //lock to private if no account is created
+        if(helper.getAccountDBSize() == 0) pub_pri.setEnabled(false);
+
         final RadioGroup obj_type = new RadioGroup(this);
         obj_type.setOrientation(RadioGroup.HORIZONTAL);
 
@@ -597,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
         r_task.setText("task");
         r_task.setId(R.id.radio_task);
 
-        RadioButton r_event= new RadioButton(this);
+        final RadioButton r_event= new RadioButton(this);
         r_event.setText("event");
         r_event.setId(R.id.radio_event);
 
@@ -605,32 +611,7 @@ public class MainActivity extends AppCompatActivity {
         r_item.setText("item");
         r_item.setId(R.id.radio_item);
 
-        final EditText date = username("date");
-        date.setFocusable(false);
-
-
-        final Calendar cal = Calendar.getInstance();
-        final DatePickerDialog.OnDateSetListener d_picker = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, monthOfYear);
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel(date,cal);
-            }
-        };
-
-        date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dpd = new DatePickerDialog(view.getContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
-                dpd.show();
-            }
-        });
-        //date.setInputType(InputType.TYPE_CLASS_DATETIME);
-        date.setEnabled(false);
+        final EditText date = date("date");
 
         final EditText title = username("title");
         title.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
@@ -714,6 +695,19 @@ public class MainActivity extends AppCompatActivity {
         d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
         //needs to be attached after positiveButton is created
+        date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(title.getText().length() != 0) d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+        });
+
         title.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
@@ -723,16 +717,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(title.getText().length() == 0 || obj_type.getCheckedRadioButtonId() == -1)
+                if(r_event.isChecked() && date.getText().length() == 0) d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                else if(title.getText().length() == 0 || obj_type.getCheckedRadioButtonId() == -1)
                 {
                     d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                 }
                 else d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
             }
         });
-
-        //todo
-        //Toast.makeText(getApplicationContext(),"worked",Toast.LENGTH_LONG).show();
     }
 
     //used to set the textEdit text to the selected date
@@ -764,6 +756,38 @@ public class MainActivity extends AppCompatActivity {
         temp.setMaxLines(1);
         temp.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         temp.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        return temp;
+    }
+
+    //edit text date helper with datepicker listener entry
+    private EditText date(String hint)
+    {
+        final EditText temp = username(hint);
+
+        temp.setFocusable(false);
+        temp.setEnabled(false);
+
+
+        final Calendar cal = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener d_picker = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, monthOfYear);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel(temp,cal);
+            }
+        };
+
+        temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dpd = new DatePickerDialog(view.getContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                dpd.show();
+            }
+        });
         return temp;
     }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="radio_task" type="id" />
+    <item name="radio_event" type="id" />
+    <item name="radio_item" type="id" />
+</resources>

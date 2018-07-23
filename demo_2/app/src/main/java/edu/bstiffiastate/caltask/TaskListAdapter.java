@@ -1,6 +1,8 @@
 package edu.bstiffiastate.caltask;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -24,13 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 
 public class TaskListAdapter extends BaseAdapter
 {
     private LocalDBAdapter helper;
-    FirebaseDatabase database;
+    private FirebaseDatabase database;
 
-    //private Context mContext;
     private ArrayList<MainActivity.TEI_Object> tasks;
 
     TaskListAdapter(ArrayList<MainActivity.TEI_Object> objects)
@@ -93,7 +95,9 @@ public class TaskListAdapter extends BaseAdapter
             viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(),cur.getTitle(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(view.getContext(),"edit used to work",Toast.LENGTH_LONG).show();
+                    //editTask(cur.getId(),cur.getDate(),cur.getTitle());
+                    //e(view.getContext(), cur.getTitle());
                 }
             });
 
@@ -106,6 +110,11 @@ public class TaskListAdapter extends BaseAdapter
             });
         }
         return view;
+    }
+
+    public void e(Context context, String data)
+    {
+        Toast.makeText(context,data,Toast.LENGTH_LONG).show();
     }
 
     private void updateTaskLists()
@@ -144,7 +153,7 @@ public class TaskListAdapter extends BaseAdapter
         edit_t_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dpd = new DatePickerDialog(MainActivity.getAppContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog dpd = new DatePickerDialog(view.getContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
                 dpd.show();
             }
         });

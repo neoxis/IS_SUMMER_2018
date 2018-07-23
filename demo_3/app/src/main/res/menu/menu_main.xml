@@ -1,0 +1,31 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="edu.bstiffiastate.demo_3.MainActivity">
+
+    <item
+        android:id="@+id/action_add_object"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Create"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings" >
+        <item
+            android:id="@+id/menu_info"
+            android:title="info" />
+        <item
+            android:id="@+id/menu_add_account"
+            android:title="signup" />
+        <item
+            android:id="@+id/menu_account_pass"
+            android:title="change password" />
+        <item
+            android:id="@+id/menu_delete_account"
+            android:title="delete account" />
+        <item
+            android:id="@+id/menu_account_login"
+            android:title="login" />
+    </item>
+</menu>
