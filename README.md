@@ -21,7 +21,7 @@
 | 6/12	| 1:40	| Finished button navigation example; Added button navigation/cal from scratch pictures to demo 1 write-up |
 | 6/13	| 3:25	| Finished demo 1: tutorial, app navigation, calendar depreciation, references |
 | 6/14	| 1:00	| Finished Demo 1 |
-| ===	| ===	| XXX DEMO 0NE ENDED [TOTAL HOURS: 38:40] [PROJECT TOTAL HOURS: 38:40] XXX |
+| ===	| ===	| XXX DEMO 0NE ENDED [TOTAL HOURS: **38:40**] [PROJECT TOTAL HOURS: **38:40**] XXX |
 | 6/14	| 1:35	| Researched SQLite database; mapped out database communication; wrote database method pseudo-code |
 | 6/15	| 4:45	| Added localdbHelper class; re-installed android studio update crash |
 | 6/16	| 2:15	| Started demo 2; Created datepicker_test |
@@ -46,10 +46,10 @@
 | 7/15	| 1:10	| Created CustomListAdapter class; Finally got a list adapter to work!!! |
 | 7/16	| 5:05	| Created listAdapter classes; created delete methods; attached delete methods; attached listAdapters; created updateUI methods; added updateUI methods to add_object() |
 | 7/17	| 3:10	| Finished Demo 2 |
-| ===	| ===	| XXX DEMO TWO ENDED [TOTAL HOURS: 70:55 ] [PROJECT TOTAL HOURS: 109:35] XXX |
+| ===	| ===	| XXX DEMO TWO ENDED [TOTAL HOURS: **70:55**] [PROJECT TOTAL HOURS: **109:35**] XXX |
 | 7/17	| 3:20	| Started demo three; Upgraded some date entry methods |
 | 7/18	| 4:20	| Added firebase stuff to task adapter & debugged |
 | 7/19	| 7:30	| Fixed add and delete methods for local/public event/task/item; started demo 3 write-up; added prevention of adding public object if no account; fixed event being added without date |
 | 7/20	| 4:40	| Migrated/re-built demo 2 to demo 3 application; Created logout method; Restructured and tested/fine-tuned account management methods |
 | 7/21 	| 3:40	| Added link and original account id; upgraded account info to include account link; |
-| 7/22	| 0:00	| Added link/unlink methods; Added link/unlink edittext listeners; |
+| 7/22	| 1:00	| Added link/unlink methods; Added link/unlink edittext listeners; |
