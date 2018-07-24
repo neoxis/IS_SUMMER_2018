@@ -7,6 +7,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class LocalDBAdapter
 {
     private LocalDBHelper helper;
@@ -164,6 +166,31 @@ public class LocalDBAdapter
         db.close();
     }
 
+
+    //find local objects by type
+    public ArrayList<MainActivity.TEI_Object> get_objects(String search_type)
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String[] columns = {LocalDBHelper.OBJECTS_ID,LocalDBHelper.OBJECTS_TYPE,LocalDBHelper.OBJECTS_TITLE,LocalDBHelper.OBJECTS_DATE,LocalDBHelper.OBJECTS_TIME};
+        Cursor c = db.query(LocalDBHelper.OBJECTS_TABLE, columns, null, null, null, null, null);
+        ArrayList<MainActivity.TEI_Object> list = new ArrayList<>();
+        MainActivity.TEI_Object obj;
+
+        while(c.moveToNext()) {
+            String type = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TYPE));
+            if(type.equals(search_type))
+            {
+                String id = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_ID));
+                String title = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TITLE));
+                String date = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_DATE));
+                String time = c.getString(c.getColumnIndex(LocalDBHelper.OBJECTS_TIME));
+                obj = new MainActivity.TEI_Object(id,type,title,date,time);
+                list.add(obj);
+            }
+        }
+        c.close();
+        return list;
+    }
     /**
      * Task Methods
      */

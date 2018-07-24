@@ -43,6 +43,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
     LocalDBAdapter dbAdapter;
     FirebaseDatabase database;
+    TodayActivity ta;
+    ArrayList<TEI_Object> f_objects;
 
     MenuItem info, sign_up, delete_account, login, change_pass;
 
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
         dbAdapter = new LocalDBAdapter(this);
         database = FirebaseDatabase.getInstance();
+
+        ta = new TodayActivity();
     }
 
     @Override
@@ -135,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             switch (position)
             {
                 case 0:
-                    return new TodayActivity();
+                    return ta;
                 case 1:
                     return new ListsActivity();
                 case 2:
@@ -551,7 +557,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //todo
     //displays current account information
     public void view_account()
     {
@@ -806,6 +811,10 @@ public class MainActivity extends AppCompatActivity {
                             myRef.setValue(t);
                             Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
                             */
+                            DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").push();
+                            t.setId(ref.getKey());
+                            ref.setValue(t);
+                            Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
                         }
                         else //private
                         {
@@ -820,6 +829,14 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
                             }
                             */
+                            long id = dbAdapter.create_item(type,t.getTitle(),t.getDate(),t.getTime());
+                            if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
+                            else
+                            {
+                                //todo update stuff?
+                                update_today_fragment();
+                                Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
@@ -861,6 +878,16 @@ public class MainActivity extends AppCompatActivity {
                 else d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
             }
         });
+    }
+
+
+    private void update_today_fragment()
+    {
+        ta.update_today_tasks();
+        //ArrayList<MainActivity.TEI_Object> list = dbAdapter.get_objects("task");
+        //get_firebase_objects("task");
+        //list.addAll(f_objects);
+        //ta.getT_adapter().updateItems(list);
     }
 
     /**

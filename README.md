@@ -52,4 +52,5 @@
 | 7/19	| 7:30	| Fixed add and delete methods for local/public event/task/item; started demo 3 write-up; added prevention of adding public object if no account; fixed event being added without date |
 | 7/20	| 4:40	| Migrated/re-built demo 2 to demo 3 application; Created logout method; Restructured and tested/fine-tuned account management methods |
 | 7/21 	| 3:40	| Added link and original account id; upgraded account info to include account link; |
-| 7/22	| 1:00	| Added link/unlink methods; Added link/unlink edittext listeners; |
+| 7/22	| 1:20	| Added link/unlink methods; Added link/unlink edittext listeners |
+| 7/23	| 3:45	| Implemented add object, TodayTaskListAdapter class, edit/delete tasks; |
