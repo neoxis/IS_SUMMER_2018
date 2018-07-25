@@ -1,7 +1,6 @@
 package edu.bstiffiastate.demo_3;
 
 import android.app.DatePickerDialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
@@ -24,7 +23,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -43,7 +41,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
@@ -86,6 +83,18 @@ public class MainActivity extends AppCompatActivity {
 
         dbAdapter = new LocalDBAdapter(this);
         database = FirebaseDatabase.getInstance();
+
+        //update fragments on page change
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) { }
+
+            @Override
+            public void onPageSelected(int i) { update_views(); }
+
+            @Override
+            public void onPageScrollStateChanged(int i) { }
+        });
     }
 
     @Override
@@ -134,9 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+        SectionsPagerAdapter(FragmentManager fm) { super(fm); }
 
         @Override
         public Fragment getItem(int position) {
@@ -211,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                                                 else
                                                 {
                                                     Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
+                                                    update_firebase_listeners();
                                                     toggle_account_menu();
                                                 }
                                                 break;
@@ -260,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
         {
             //Toast.makeText(getApplicationContext(),"inside else",Toast.LENGTH_LONG).show();
             dbAdapter.delete_account();
+            ta.remove_today_firebase_listener();
+            la.remove_lists_firebase_listener();
             toggle_account_menu();
         }
     }
@@ -451,12 +461,14 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
+    //creates random 4 digit link id
     private String create_link_id()
     {
         Random rand = new Random();
         return String.format("%04d", rand.nextInt(10000));
     }
 
+    //checks to see if the username is taken or the fields are empty
     private boolean create_check_fields(EditText a, EditText b)
     {
         if(a.getError()!= null) return false;
@@ -493,6 +505,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //deletes account from local and firebase databases [leaves object table]
     public void delete_account()
     {
         //create linear layout
@@ -519,6 +532,8 @@ public class MainActivity extends AppCompatActivity {
                             DatabaseReference ref = database.getReference("users").child(id);
                             ref.removeValue();
                             dbAdapter.delete_account();
+                            ta.remove_today_firebase_listener();
+                            la.remove_lists_firebase_listener();
                             toggle_account_menu();
                             Toast.makeText(getApplicationContext(),"Account Deleted",Toast.LENGTH_LONG).show();
                         }
@@ -559,7 +574,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //displays current account information
+    //displays current account information & handles account linking
     public void view_account()
     {
         String[] info = dbAdapter.get_account_info().split("\\|");
@@ -573,17 +588,17 @@ public class MainActivity extends AppCompatActivity {
         l.setFocusableInTouchMode(true);
 
         TextView username = new TextView(this);
-        username.setText("Username: "+info[0]);
+        username.setText("Username:\t"+info[0]);
         username.setTextSize(TypedValue.COMPLEX_UNIT_SP,24);
         TextView pass = new TextView(this);
-        pass.setText("Password: "+info[1]);
+        pass.setText("Password:\t"+info[1]);
         TextView acc = new TextView(this);
-        acc.setText("Account: "+info[2]);
+        acc.setText("Current ID:\t"+info[2]);
         TextView oacc = new TextView(this);
-        oacc.setText("Link ID: "+info[3]);
+        oacc.setText("Link ID:\t\t\t\t\t"+info[3]);
         oacc.setTextSize(TypedValue.COMPLEX_UNIT_SP,24);
         TextView link = new TextView(this);
-        link.setText("Original ID: "+info[4]);
+        link.setText("Original ID:\t"+info[4]);
 
         final EditText link_u_name = username("connect to 'username'");
         final EditText link_u_id = username("with link id");
@@ -591,9 +606,9 @@ public class MainActivity extends AppCompatActivity {
         link_u_id.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         l.addView(username);
+        l.addView(oacc);
         l.addView(pass);
         l.addView(acc);
-        l.addView(oacc);
         l.addView(link);
         l.addView(link_u_name);
         l.addView(link_u_id);
@@ -631,7 +646,7 @@ public class MainActivity extends AppCompatActivity {
                                             else
                                             {
                                                 Toast.makeText(getApplicationContext(),"Link Successful",Toast.LENGTH_LONG).show();
-                                                //todo update listener address?
+                                                update_firebase_listeners();
                                             }
                                             break;
                                         }
@@ -651,7 +666,8 @@ public class MainActivity extends AppCompatActivity {
                             else
                             {
                                 Toast.makeText(getApplicationContext(),"Unlink Successful",Toast.LENGTH_LONG).show();
-                                //todo update listener address?
+                                update_firebase_listeners();
+
                             }
                         }
                     }
@@ -671,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(create_check_fields(link_u_name,link_u_id));
+                d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(link_check_fields(link_u_name,link_u_id));
             }
         });
 
@@ -684,9 +700,30 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(create_check_fields(link_u_name,link_u_id));
+                d.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(link_check_fields(link_u_name,link_u_id));
             }
         });
+    }
+
+    //checks if fields are empty or if pin is less than 4 digits
+    private boolean link_check_fields(EditText a, EditText b)
+    {
+        if(b.getText().length() < 4) return false;
+        else return !a.getText().toString().isEmpty() && !b.getText().toString().isEmpty();
+    }
+
+    // update firebase listeners for linking/unlinking
+    private void update_firebase_listeners()
+    {
+        //today activity
+        ta.remove_today_firebase_listener();
+        ta.add_today_firebase_listener();
+
+        //lists activity
+        la.remove_lists_firebase_listener();
+        la.add_lists_firebase_listener();
+
+        //calendar activity
     }
 
     //toggles account menu selectable options
@@ -866,6 +903,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //update fragment views()
+    private void update_views()
+    {
+        ta.update_today_events();
+        ta.update_today_tasks();
+        la.update_lists_tasks();
+        la.update_lists_items();
+    }
     //update fragment views upon object creation
     private void create_update_views(String type)
     {

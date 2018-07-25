@@ -67,31 +67,7 @@ public class TodayTaskListAdapter extends BaseAdapter
         viewHolder.t_date.setText(cur.getDate());
         viewHolder.t_title.setText(cur.getTitle());
 
-        if(cur.getId().startsWith("-")) //public
-        {
-            viewHolder.t_date.setTextColor(Color.parseColor("#FF4081"));
-            viewHolder.t_title.setTextColor(Color.parseColor("#FF4081"));
-            viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").child(cur.getId());
-                    ref.removeValue();
-                    ta.update_today_tasks();
-                }
-            });
-        }
-        else //private
-        {
-            viewHolder.t_date.setTextColor(viewHolder.c);
-            viewHolder.t_title.setTextColor(viewHolder.c);
-            viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dbAdapter.delete_object(cur.getId());
-                    ta.update_today_tasks();
-                }
-            });
-        }
+        color_task(cur.getId(), viewHolder);
 
         viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +75,43 @@ public class TodayTaskListAdapter extends BaseAdapter
                 edit_task(cur.getId(),cur.getDate(),cur.getTitle());
             }
         });
+
+        viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                delete_task(cur.getId());
+            }
+        });
         return view;
+    }
+
+    private void color_task(String t_id, TaskViewHolder viewHolder)
+    {
+        if(t_id.startsWith("-"))
+        {
+            viewHolder.t_date.setTextColor(Color.parseColor("#FF4081"));
+            viewHolder.t_title.setTextColor(Color.parseColor("#FF4081"));
+        }
+        else
+        {
+            viewHolder.t_date.setTextColor(viewHolder.c);
+            viewHolder.t_title.setTextColor(viewHolder.c);
+        }
+    }
+
+    private void delete_task(final String t_id)
+    {
+        if(t_id.startsWith("-"))
+        {
+            DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").child(t_id);
+            ref.removeValue();
+            ta.update_today_tasks();
+        }
+        else
+        {
+            dbAdapter.delete_object(t_id);
+            ta.update_today_tasks();
+        }
     }
 
     public void updateItems(ArrayList<MainActivity.TEI_Object> update)
@@ -115,7 +127,6 @@ public class TodayTaskListAdapter extends BaseAdapter
         l.setOrientation(LinearLayout.VERTICAL);
 
         final EditText edit_t_date = edit_date(date);
-
         final EditText edit_t_title = edit_title(title);
 
         l.addView(edit_t_date);
@@ -146,16 +157,23 @@ public class TodayTaskListAdapter extends BaseAdapter
                     }
                 })
                 .setNegativeButton("cancel",null)
+                .setNeutralButton("delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        delete_task(t_id);
+                    }
+                })
                 .create();
         d.show();
     }
 
-    private EditText edit_date(String hint)
+    private EditText edit_date(String text)
     {
         final EditText temp = new EditText(context);
         temp.setFocusable(false);
         temp.setHint("date");
-        temp.setText(hint);
+        temp.setText(text);
+        temp.setCursorVisible(false);
 
         final Calendar cal = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener d_picker = new DatePickerDialog.OnDateSetListener() {
@@ -176,18 +194,25 @@ public class TodayTaskListAdapter extends BaseAdapter
             @Override
             public void onClick(View view) {
                 DatePickerDialog dpd = new DatePickerDialog(view.getContext(),d_picker,cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                dpd.setButton(DialogInterface.BUTTON_NEUTRAL, "clear", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        temp.setText("");
+                    }
+                });
                 dpd.show();
             }
         });
         return temp;
     }
 
-    private EditText edit_title(String hint)
+    private EditText edit_title(String text)
     {
         EditText temp = new EditText(context);
         temp.setHint("title");
-        temp.setText(hint);
+        temp.setText(text);
         temp.setMaxLines(1);
+        temp.setSelection(text.length());
         return temp;
     }
 

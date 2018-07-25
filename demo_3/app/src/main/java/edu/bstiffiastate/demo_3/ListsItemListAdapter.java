@@ -45,6 +45,7 @@ public class ListsItemListAdapter extends BaseAdapter
     @Override
     public long getItemId(int i) { return i; }
 
+    //todo move delete to own method
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ItemViewHolder viewHolder;
@@ -99,6 +100,7 @@ public class ListsItemListAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
 
+    //todo delete object upon empty fields
     private void edit_item(final String item_id, String title)
     {
         final EditText edit_t_title = edit_title(title);
@@ -128,12 +130,13 @@ public class ListsItemListAdapter extends BaseAdapter
         d.show();
     }
 
-    private EditText edit_title(String hint)
+    private EditText edit_title(String text)
     {
         EditText temp = new EditText(context);
         temp.setHint("title");
-        temp.setText(hint);
+        temp.setText(text);
         temp.setMaxLines(1);
+        temp.setSelection(text.length());
         return temp;
     }
 

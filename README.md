@@ -55,3 +55,4 @@
 | 7/22	| 1:20	| Added link/unlink methods; Added link/unlink edittext listeners |
 | 7/23	| 3:45	| Implemented add object, TodayTaskListAdapter class, edit/delete tasks |
 | 7/24	| 4:10	| Implemented TodayEventListAdapter, ListsTaskListAdapter, and ListsItemListAdapter classes; Including edit/add/delete methods; [BUG] Delete does not update other fragments |
+| 7/25	| 4:20	| Updated firebase listeners for account linking/unlinking; Fixed fragment updating; Moved cusor to end of text in edit object methods; Fixed link with less than 4 digit link id; |

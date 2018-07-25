@@ -21,6 +21,8 @@ public class TodayActivity extends Fragment
 {
     ListView t_events, t_tasks;
     FirebaseDatabase database;
+    DatabaseReference objects;
+    ValueEventListener f_listener;
     LocalDBAdapter dbAdapter;
     ArrayList<MainActivity.TEI_Object> f_tasks, f_events;
 
@@ -45,10 +47,10 @@ public class TodayActivity extends Fragment
         return rootView;
     }
 
-    private void add_today_firebase_listener()
+    public void add_today_firebase_listener()
     {
-        DatabaseReference objects = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table");
-        objects.addValueEventListener(new ValueEventListener() {
+        objects = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table");
+        f_listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> si = dataSnapshot.getChildren();
@@ -74,7 +76,13 @@ public class TodayActivity extends Fragment
 
             @Override
             public void onCancelled(DatabaseError databaseError) { }
-        });
+        };
+        objects.addValueEventListener(f_listener);
+    }
+
+    public void remove_today_firebase_listener()
+    {
+        objects.removeEventListener(f_listener);
     }
 
     public void update_today_tasks()

@@ -19,6 +19,8 @@ import java.util.Iterator;
 public class ListsActivity extends Fragment
 {
     FirebaseDatabase database;
+    DatabaseReference objects;
+    ValueEventListener f_listener;
     LocalDBAdapter dbAdapter;
     ListView l_tasks, l_items;
     ArrayList<MainActivity.TEI_Object> f_tasks, f_items;
@@ -46,8 +48,8 @@ public class ListsActivity extends Fragment
 
     public void add_lists_firebase_listener()
     {
-        DatabaseReference objects = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table");
-        objects.addValueEventListener(new ValueEventListener() {
+        objects = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table");
+        f_listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> si = dataSnapshot.getChildren();
@@ -73,7 +75,13 @@ public class ListsActivity extends Fragment
 
             @Override
             public void onCancelled(DatabaseError databaseError) { }
-        });
+        };
+        objects.addValueEventListener(f_listener);
+    }
+
+    public void remove_lists_firebase_listener()
+    {
+        objects.removeEventListener(f_listener);
     }
 
     public void update_lists_tasks()
