@@ -58,11 +58,11 @@ public class ListsTaskListAdapter extends BaseAdapter
         return i;
     }
 
-    //todo move delete to own method
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
         TaskViewHolder viewHolder;
+        final int f_i = i;
         if(view == null)
         {
             view = LayoutInflater.from(context).inflate(R.layout.task_list_item,viewGroup,false);
@@ -88,7 +88,9 @@ public class ListsTaskListAdapter extends BaseAdapter
         viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                la.f_tasks.remove(f_i);
                 delete_task(cur.getId());
+
             }
         });
         return view;
@@ -162,6 +164,12 @@ public class ListsTaskListAdapter extends BaseAdapter
                     }
                 })
                 .setNegativeButton("cancel",null)
+                .setNeutralButton("delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        delete_task(t_id);
+                    }
+                })
                 .create();
         d.show();
     }

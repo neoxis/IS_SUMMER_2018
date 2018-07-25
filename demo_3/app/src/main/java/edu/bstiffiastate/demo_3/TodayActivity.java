@@ -44,6 +44,8 @@ public class TodayActivity extends Fragment
 
         if(dbAdapter.get_account_table_size() == 1) add_today_firebase_listener();
 
+        update_today_events();
+        update_today_tasks();
         return rootView;
     }
 

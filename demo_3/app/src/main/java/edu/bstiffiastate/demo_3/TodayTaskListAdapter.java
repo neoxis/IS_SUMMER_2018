@@ -54,6 +54,7 @@ public class TodayTaskListAdapter extends BaseAdapter
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         TaskViewHolder viewHolder;
+        final int f_i = i;
         if(view == null)
         {
             view = LayoutInflater.from(context).inflate(R.layout.task_list_item,viewGroup,false);
@@ -79,6 +80,7 @@ public class TodayTaskListAdapter extends BaseAdapter
         viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ta.f_tasks.remove(f_i);
                 delete_task(cur.getId());
             }
         });
