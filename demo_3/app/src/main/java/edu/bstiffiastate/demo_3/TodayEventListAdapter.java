@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,49 +25,42 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ListsTaskListAdapter extends BaseAdapter
+public class TodayEventListAdapter extends BaseAdapter
 {
-    FirebaseDatabase database;
     LocalDBAdapter dbAdapter;
-    ArrayList<MainActivity.TEI_Object> tasks;
-    ListsActivity la;
+    FirebaseDatabase database;
+    ArrayList<MainActivity.TEI_Object> events;
+    TodayActivity ta;
     Context context;
 
-    ListsTaskListAdapter(Context context, ListsActivity la, ArrayList<MainActivity.TEI_Object> tasks)
+    TodayEventListAdapter(Context context, TodayActivity ta, ArrayList<MainActivity.TEI_Object> events)
     {
         this.context = context;
-        this.la = la;
-        this.tasks = tasks;
-        database = FirebaseDatabase.getInstance();
+        this.ta = ta;
+        this.events = events;
         dbAdapter = new LocalDBAdapter(context);
+        database = FirebaseDatabase.getInstance();
     }
 
     @Override
-    public int getCount() {
-        return tasks.size();
-    }
+    public int getCount() { return events.size(); }
 
     @Override
-    public Object getItem(int i) {
-        return tasks.get(i);
-    }
+    public Object getItem(int i) { return events.get(i); }
 
     @Override
-    public long getItemId(int i) {
-        return i;
-    }
+    public long getItemId(int i) { return i; }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup)
-    {
-        TaskViewHolder viewHolder;
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        EventViewHolder viewHolder;
         if(view == null)
         {
             view = LayoutInflater.from(context).inflate(R.layout.task_list_item,viewGroup,false);
-            viewHolder = new TaskViewHolder(view);
+            viewHolder = new EventViewHolder(view);
             view.setTag(viewHolder);
         }
-        else viewHolder = (TaskViewHolder) view.getTag();
+        else viewHolder = (EventViewHolder) view.getTag();
 
         final MainActivity.TEI_Object cur = (MainActivity.TEI_Object) getItem(i);
 
@@ -84,7 +76,7 @@ public class ListsTaskListAdapter extends BaseAdapter
                 public void onClick(View view) {
                     DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").child(cur.getId());
                     ref.removeValue();
-                    la.update_lists_tasks();
+                    ta.update_today_events();
                 }
             });
         }
@@ -96,7 +88,7 @@ public class ListsTaskListAdapter extends BaseAdapter
                 @Override
                 public void onClick(View view) {
                     dbAdapter.delete_object(cur.getId());
-                    la.update_lists_tasks();
+                    ta.update_today_events();
                 }
             });
         }
@@ -104,27 +96,32 @@ public class ListsTaskListAdapter extends BaseAdapter
         viewHolder.t_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                edit_task(cur.getId(),cur.getDate(),cur.getTitle());
+                edit_event(cur.getId(),cur.getDate(),cur.getTitle());
             }
         });
         return view;
     }
 
-    private void edit_task(final String t_id, final String date, String title)
+    public void updateItems(ArrayList<MainActivity.TEI_Object> update)
+    {
+        events = update;
+        notifyDataSetChanged();
+    }
+
+    private void edit_event(final String t_id, final String date, String title)
     {
         //create objects
         LinearLayout l = new LinearLayout(context);
         l.setOrientation(LinearLayout.VERTICAL);
 
         final EditText edit_t_date = edit_date(date);
-
         final EditText edit_t_title = edit_title(title);
 
         l.addView(edit_t_date);
         l.addView(edit_t_title);
 
         AlertDialog d = new AlertDialog.Builder(context)
-                .setTitle("edit task")
+                .setTitle("edit event")
                 .setView(l)
                 .setPositiveButton("edit", new DialogInterface.OnClickListener() {
                     @Override
@@ -137,25 +134,19 @@ public class ListsTaskListAdapter extends BaseAdapter
 
                             edit_f_date.setValue(edit_t_date.getText().toString());
                             edit_f_title.setValue(edit_t_title.getText().toString());
-                            la.update_lists_tasks();
+                            ta.update_today_events();
                         }
                         else
                         {
                             int id = dbAdapter.updateTask(t_id,edit_t_date.getText().toString(),edit_t_title.getText().toString());
                             if(id <= 0) Toast.makeText(context,"Update failed",Toast.LENGTH_LONG).show();
-                            else la.update_lists_tasks();
+                            else ta.update_today_events();
                         }
                     }
                 })
                 .setNegativeButton("cancel",null)
                 .create();
         d.show();
-    }
-
-    public void updateItems(ArrayList<MainActivity.TEI_Object> update)
-    {
-        tasks = update;
-        notifyDataSetChanged();
     }
 
     private EditText edit_date(String hint)
@@ -199,12 +190,12 @@ public class ListsTaskListAdapter extends BaseAdapter
         return temp;
     }
 
-    private class TaskViewHolder
+    private class EventViewHolder
     {
         TextView t_date, t_title;
         ImageButton t_done;
         ColorStateList c;
-        TaskViewHolder(View view)
+        EventViewHolder(View view)
         {
             t_date = view.findViewById(R.id.task_due_date);
             t_title = view.findViewById(R.id.task_title);

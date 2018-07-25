@@ -25,6 +25,7 @@ public class TodayActivity extends Fragment
     ArrayList<MainActivity.TEI_Object> f_tasks, f_events;
 
     TodayTaskListAdapter t_adapter;
+    TodayEventListAdapter e_adapter;
     @Override
     public View onCreateView(@NonNull LayoutInflater li, ViewGroup vg, Bundle savedInst)
     {
@@ -63,10 +64,10 @@ public class TodayActivity extends Fragment
                         f_tasks.add(o);
                         update_today_tasks();
                     }
-                    if(o.getType().equals("event"));
+                    if(o.getType().equals("event"))
                     {
                         f_events.add(o);
-                        //update
+                        update_today_events();
                     }
                 }
             }
@@ -86,5 +87,17 @@ public class TodayActivity extends Fragment
             t_tasks.setAdapter(t_adapter);
         }
         else t_adapter.updateItems(list);
+    }
+
+    public void update_today_events()
+    {
+        ArrayList<MainActivity.TEI_Object> list = dbAdapter.get_objects("event");
+        list.addAll(f_events);
+        if(e_adapter == null)
+        {
+            e_adapter = new TodayEventListAdapter(getContext(),this,list);
+            t_events.setAdapter(e_adapter);
+        }
+        else e_adapter.updateItems(list);
     }
 }

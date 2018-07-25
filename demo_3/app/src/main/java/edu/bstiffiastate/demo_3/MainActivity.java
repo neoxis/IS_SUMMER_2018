@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     LocalDBAdapter dbAdapter;
     FirebaseDatabase database;
     TodayActivity ta;
-    ArrayList<TEI_Object> f_objects;
+    ListsActivity la;
 
     MenuItem info, sign_up, delete_account, login, change_pass;
 
@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ta = new TodayActivity();
+        la = new ListsActivity();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
 
+
         TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -82,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         dbAdapter = new LocalDBAdapter(this);
         database = FirebaseDatabase.getInstance();
-
-        ta = new TodayActivity();
     }
 
     @Override
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return ta;
                 case 1:
-                    return new ListsActivity();
+                    return la;
                 case 2:
                     return new CalendarActivity();
                 default:
@@ -805,12 +807,6 @@ public class MainActivity extends AppCompatActivity {
                         TEI_Object t = new TEI_Object(type,title.getText().toString(),date.getText().toString(),null);
                         if(pub_pri.isChecked()) //public
                         {
-                            /*
-                            DatabaseReference myRef = database.getReference("objects").child(helper.getAccountID()+"-table").push();
-                            t.setId(myRef.getKey());
-                            myRef.setValue(t);
-                            Toast.makeText(getApplicationContext(), "Public: Creation Successful",Toast.LENGTH_LONG).show();
-                            */
                             DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").push();
                             t.setId(ref.getKey());
                             ref.setValue(t);
@@ -818,23 +814,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else //private
                         {
-                            /*
-                            long id = helper.insertItem(type,t.getTitle(),t.getDate(),t.getTime());
-                            if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
-                            else
-                            {
-                                if(type.equals("item")) updateItemListViews();
-                                if(type.equals("task")) updateTaskListViews();
-                                if(type.equals("event")) updateEventListViews();
-                                Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
-                            }
-                            */
                             long id = dbAdapter.create_item(type,t.getTitle(),t.getDate(),t.getTime());
                             if(id <= 0) Toast.makeText(getApplicationContext(),"Private: Creation Failed",Toast.LENGTH_LONG).show();
                             else
                             {
                                 //todo update stuff?
-                                update_today_fragment();
+                                create_update_views(type);
+
                                 Toast.makeText(getApplicationContext(),"Private: Creation Successful",Toast.LENGTH_LONG).show();
                             }
                         }
@@ -880,14 +866,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    private void update_today_fragment()
+    //update fragment views upon object creation
+    private void create_update_views(String type)
     {
-        ta.update_today_tasks();
-        //ArrayList<MainActivity.TEI_Object> list = dbAdapter.get_objects("task");
-        //get_firebase_objects("task");
-        //list.addAll(f_objects);
-        //ta.getT_adapter().updateItems(list);
+        if(type.equals("event"))
+        {
+            ta.update_today_events();
+        }
+        if(type.equals("task"))
+        {
+            ta.update_today_tasks();
+            la.update_lists_tasks();
+        }
+        if(type.equals("item"))
+        {
+            la.update_lists_items();
+        }
     }
 
     /**

@@ -31,8 +31,8 @@ public class TodayTaskListAdapter extends BaseAdapter
     FirebaseDatabase database;
     ArrayList<MainActivity.TEI_Object> tasks;
     TodayActivity ta;
-
     Context context;
+
     TodayTaskListAdapter(Context context, TodayActivity ta, ArrayList<MainActivity.TEI_Object> tasks)
     {
         this.context = context;
