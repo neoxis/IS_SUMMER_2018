@@ -69,6 +69,7 @@ public class ListsItemListAdapter extends BaseAdapter
                 public void onClick(View view) {
                     DatabaseReference ref = database.getReference("objects").child(dbAdapter.get_account_ID()+"-table").child(cur.getId());
                     ref.removeValue();
+                    la.f_items.remove(cur);
                     la.update_lists_items();
                 }
             });

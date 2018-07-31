@@ -4,28 +4,29 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:isScrollContainer="true"
     tools:context="edu.bstiffiastate.demo_3.MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="65dp">
     <!-- To do Heading-->
     <TextView
         android:id="@+id/task_todo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:text="Todo"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        android:textSize="24sp" />
 
     <!-- To do list-->
     <ListView
         android:id="@+id/todo_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/task_todo_label">
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-    </ListView>
 
     <!-- Grocery Heading-->
     <TextView
@@ -33,15 +34,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grocery"
-        android:textSize="24sp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        app:layout_constraintTop_toBottomOf="@+id/todo_list" />
+        android:textSize="24sp" />
 
     <!-- Grocery List-->
     <ListView
         android:id="@+id/grocery_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/grocery_label" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

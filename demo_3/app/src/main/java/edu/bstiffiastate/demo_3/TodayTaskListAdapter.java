@@ -80,7 +80,7 @@ public class TodayTaskListAdapter extends BaseAdapter
         viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ta.f_tasks.remove(f_i);
+                ta.f_tasks.remove(cur);
                 delete_task(cur.getId());
             }
         });

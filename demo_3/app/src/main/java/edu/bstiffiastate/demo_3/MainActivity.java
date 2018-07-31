@@ -150,8 +150,10 @@ public class MainActivity extends AppCompatActivity {
             switch (position)
             {
                 case 0:
+                    ta = new TodayActivity(); //grab reference
                     return ta;
                 case 1:
+                    la = new ListsActivity(); //grab reference
                     return la;
                 case 2:
                     return new CalendarActivity();
@@ -911,6 +913,7 @@ public class MainActivity extends AppCompatActivity {
         la.update_lists_tasks();
         la.update_lists_items();
     }
+    
     //update fragment views upon object creation
     private void create_update_views(String type)
     {

@@ -79,6 +79,7 @@ public class TodayEventListAdapter extends BaseAdapter
         viewHolder.t_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ta.f_events.remove(cur);
                 delete_event(cur.getId());
             }
         });

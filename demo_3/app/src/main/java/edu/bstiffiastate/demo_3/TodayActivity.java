@@ -28,13 +28,11 @@ public class TodayActivity extends Fragment
 
     TodayTaskListAdapter t_adapter;
     TodayEventListAdapter e_adapter;
-    @Override
-    public View onCreateView(@NonNull LayoutInflater li, ViewGroup vg, Bundle savedInst)
-    {
-        View rootView = li.inflate(R.layout.today_fragment,vg,false);
 
-        t_tasks = rootView.findViewById(R.id.today_tasks);
-        t_events = rootView.findViewById(R.id.today_events);
+    @Override
+    public void onCreate(Bundle bundle)
+    {
+        super.onCreate(bundle);
 
         database = FirebaseDatabase.getInstance();
         dbAdapter = new LocalDBAdapter(getContext());
@@ -43,6 +41,23 @@ public class TodayActivity extends Fragment
         f_events = new ArrayList<>();
 
         if(dbAdapter.get_account_table_size() == 1) add_today_firebase_listener();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater li, ViewGroup vg, Bundle savedInst)
+    {
+        View rootView = li.inflate(R.layout.today_fragment,vg,false);
+
+        t_tasks = rootView.findViewById(R.id.today_tasks);
+        t_events = rootView.findViewById(R.id.today_events);
+
+        //database = FirebaseDatabase.getInstance();
+        //dbAdapter = new LocalDBAdapter(getContext());
+
+        //f_tasks = new ArrayList<>();
+        //f_events = new ArrayList<>();
+
+        //if(dbAdapter.get_account_table_size() == 1) add_today_firebase_listener();
 
         update_today_events();
         update_today_tasks();
@@ -96,7 +111,9 @@ public class TodayActivity extends Fragment
             t_adapter = new TodayTaskListAdapter(getContext(),this,list);
             t_tasks.setAdapter(t_adapter);
         }
-        else t_adapter.updateItems(list);
+        else {
+            t_adapter.updateItems(list);
+        }
     }
 
     public void update_today_events()
@@ -108,6 +125,9 @@ public class TodayActivity extends Fragment
             e_adapter = new TodayEventListAdapter(getContext(),this,list);
             t_events.setAdapter(e_adapter);
         }
-        else e_adapter.updateItems(list);
+        else {
+            e_adapter.updateItems(list);
+        }
     }
+
 }

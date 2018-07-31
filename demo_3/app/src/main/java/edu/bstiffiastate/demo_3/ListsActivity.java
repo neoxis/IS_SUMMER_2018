@@ -27,13 +27,11 @@ public class ListsActivity extends Fragment
 
     ListsTaskListAdapter t_adapter;
     ListsItemListAdapter i_adapter;
-    @Override
-    public View onCreateView(LayoutInflater li, ViewGroup vg, Bundle savedInst)
-    {
-        View rootView = li.inflate(R.layout.lists_fragment, vg, false);
 
-        l_tasks = rootView.findViewById(R.id.todo_list);
-        l_items = rootView.findViewById(R.id.grocery_list);
+    @Override
+    public void onCreate(Bundle bundle)
+    {
+        super.onCreate(bundle);
 
         database = FirebaseDatabase.getInstance();
         dbAdapter = new LocalDBAdapter(getContext());
@@ -42,6 +40,23 @@ public class ListsActivity extends Fragment
         f_items = new ArrayList<>();
 
         if(dbAdapter.get_account_table_size() == 1) add_lists_firebase_listener();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater li, ViewGroup vg, Bundle savedInst)
+    {
+        View rootView = li.inflate(R.layout.lists_fragment, vg, false);
+
+        l_tasks = rootView.findViewById(R.id.todo_list);
+        l_items = rootView.findViewById(R.id.grocery_list);
+
+        //database = FirebaseDatabase.getInstance();
+        //dbAdapter = new LocalDBAdapter(getContext());
+
+        //f_tasks = new ArrayList<>();
+        //f_items = new ArrayList<>();
+
+        //if(dbAdapter.get_account_table_size() == 1) add_lists_firebase_listener();
 
         return rootView;
     }
