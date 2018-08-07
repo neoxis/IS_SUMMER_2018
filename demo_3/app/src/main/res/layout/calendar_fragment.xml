@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="30sp"
         android:background="@color/colorAccent"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
-        />
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
 
     <CalendarView
         android:id="@+id/cal_view"

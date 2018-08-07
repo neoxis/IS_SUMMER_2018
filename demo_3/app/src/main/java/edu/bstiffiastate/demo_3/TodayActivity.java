@@ -51,14 +51,6 @@ public class TodayActivity extends Fragment
         t_tasks = rootView.findViewById(R.id.today_tasks);
         t_events = rootView.findViewById(R.id.today_events);
 
-        //database = FirebaseDatabase.getInstance();
-        //dbAdapter = new LocalDBAdapter(getContext());
-
-        //f_tasks = new ArrayList<>();
-        //f_events = new ArrayList<>();
-
-        //if(dbAdapter.get_account_table_size() == 1) add_today_firebase_listener();
-
         update_today_events();
         update_today_tasks();
         return rootView;
@@ -99,7 +91,12 @@ public class TodayActivity extends Fragment
 
     public void remove_today_firebase_listener()
     {
+        f_events.clear();
+        f_tasks.clear();
         objects.removeEventListener(f_listener);
+        update_today_events();
+        update_today_tasks();
+
     }
 
     public void update_today_tasks()
@@ -129,5 +126,4 @@ public class TodayActivity extends Fragment
             e_adapter.updateItems(list);
         }
     }
-
 }

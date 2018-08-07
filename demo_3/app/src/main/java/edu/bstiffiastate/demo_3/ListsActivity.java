@@ -50,14 +50,6 @@ public class ListsActivity extends Fragment
         l_tasks = rootView.findViewById(R.id.todo_list);
         l_items = rootView.findViewById(R.id.grocery_list);
 
-        //database = FirebaseDatabase.getInstance();
-        //dbAdapter = new LocalDBAdapter(getContext());
-
-        //f_tasks = new ArrayList<>();
-        //f_items = new ArrayList<>();
-
-        //if(dbAdapter.get_account_table_size() == 1) add_lists_firebase_listener();
-
         return rootView;
     }
 
@@ -96,7 +88,11 @@ public class ListsActivity extends Fragment
 
     public void remove_lists_firebase_listener()
     {
+        f_tasks.clear();
+        f_items.clear();
         objects.removeEventListener(f_listener);
+        update_lists_tasks();
+        update_lists_items();
     }
 
     public void update_lists_tasks()
